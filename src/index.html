@@ -3,13 +3,95 @@
 <html>
     <head>
     </head>
-
     <body>
+        <div class="header">
+            <h1>Concordia University</h1>
+            <p>Marks and Grades assessment for SOEN 287 for Fall 2022</p>
+        </div>
+
+        <div class="login">
+            <h2>Sign In</h2>
+                <form action="">
+                    <input type="text" name="username" placeholder="Username" required /> <br>
+                    <input type="password" name="password" placeholder="Password" required/> <br><br>
+                    <button type="submit" value="Submit">Submit</button>
+                </form>
+        </div>
+        
+        <div class="signup">
+            <h2>Sign Up</h2>
+            <form action="">
+                <p>
+                    I am a
+                    <select name = "user type">
+                    <option> teacher </option>
+                    <option> student </option>
+                    </select>
+                </p>
+                <input type="text" name="fname" placeholder="First name" required /> <br>
+                <input type="text" name="lname" placeholder="Last name" required/> <br>
+                <input type="text" name="username" placeholder="Username" required /> <br>
+                <input type="password" name="password" placeholder="Password" required/> <br><br>
+                <button type="submit" value="Submit">Submit</button>
+                  
+            </form>
+         </div>
+        
         <!--temp buttonf-->
+        <!----
         <input type = "button" onclick="TeacherLogin();" value="Connect Teacher"/><br/>
         <input type = "button" onclick="StudentLogin();" value="Connect Student"/><br/>
         <input type = "button" onclick="WrongLogin();" value="Connect Wrong Credentials"/>
+    
+        <script src="login.js"></script>-->
+
+        <div class="footer">
+                Website made by ... names
+        </div>
+        <br>
     </body>
 
-    <script src="login.js"></script>
+    <style> 
+        .header {
+        padding: 20px;
+        text-align: center;
+        background: #912338;
+        color: white;
+        position: relative;
+        width: 100%;
+        }
+        .login {
+        padding: 30px;
+        text-align: left;
+        background: #ffffff;
+        color: #000000;
+        position: relative;
+        margin-left: 20%; 
+        float: left;
+
+        }
+        .signup {
+        padding: 30px;
+        text-align: right;
+        background: #ffffff;
+        color: #000000;
+        position: relative;
+        margin-right: 20%; 
+        float: right;
+        
+        }
+        .footer {
+        padding: 15px;
+        text-align: center;
+        background: #912338;
+        color: white;
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+        }
+        input:hover {color: #912338; background: rgb(227, 227, 227);}
+        input:focus {color: rgb(0, 0, 0); background: rgb(255, 255, 255);}
+    </style>
+    
+
 </html>
