@@ -51,9 +51,10 @@ function InitializeAccounts()
     InitializeDefaultStaticAccounts(); // temporary function, will read from file in the future
 }
 
-function OnLogin(username, password)
+function OnLogin(form)
 {
-    let passwordHash = HashPassword(password);
+    let username = form.username.value;
+    let passwordHash = HashPassword(form.password.value);
     let accountToLogin = accounts.find(function (account)
     {
         return account.Validate(username, passwordHash)
@@ -82,27 +83,4 @@ function OnLogin(username, password)
     }
 }
 
-function OnLoginTest(form)
-{
-    document.write("form received");
-    alert("form received");
-}
-
 window.onload = InitializeAccounts;
-
-
-// temp debug function
-function TeacherLogin()
-{
-    OnLogin("teacher", "teacher");
-}
-
-function StudentLogin()
-{
-    OnLogin("student", "student");
-}
-
-function WrongLogin()
-{
-    OnLogin("teacher", "tacher");
-}
