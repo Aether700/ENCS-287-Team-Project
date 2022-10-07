@@ -82,6 +82,12 @@ function OnLogin(username, password)
     }
 }
 
+function OnLoginTest(form)
+{
+    document.write("form received");
+    alert("form received");
+}
+
 window.onload = InitializeAccounts;
 
 
