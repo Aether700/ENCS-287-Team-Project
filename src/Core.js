@@ -151,28 +151,31 @@ function ReadFile(filepath)
 
 function ServerRequestListener(request, response)
 {
-    response.statusCode = 200;
-    if (request.url === "/")
+    switch(request.url)
     {
-        //response.setHeader('Content-Type', 'text/html');
-        response.setHeader('Content-Type', 'text/plain');
-        let html = ReadFile("../src/index.html");
-        //response.write();  
-        //response.end();
-        if (html != undefined)
-        {
-            //response.end("<!DOCTYPE html>\n\n<html><head></head><body><p>Webpage loaded successfully</p></body></html>");
-            response.end(html);
-        }
-        else
-        {
-            response.end("<!DOCTYPE html><html><head></head><body><p>Error loading webpage</p></body></html>");
-        }
-    }
-    else
-    {
-        response.setHeader('Content-Type', 'text/plain');
-        response.end("other webpage");
+        case"/":
+            response.statusCode = 200;
+            response.setHeader('Content-Type', 'text/html');
+            response.end(ReadFile("../src/index.html"));
+            break;
+
+        case"/teacher.html?":
+            response.statusCode = 200;
+            response.setHeader('Content-Type', 'text/html');
+            response.end(ReadFile("../src/teacher.html"));
+            break;
+
+        case"/student.html?":
+            response.statusCode = 200;
+            response.setHeader('Content-Type', 'text/html');
+            response.end(ReadFile("../src/student.html"));
+            break;
+
+        default:
+            response.statusCode = 404;
+            response.setHeader('Content-Type', 'text/plain');
+            response.end("Unknown Webpage: " + request.url);
+            break;
     }
 }
 
@@ -181,6 +184,4 @@ const port = 3000;
 
 const server = http.createServer(ServerRequestListener);
 
-server.listen(port, hostname, () => {
-    console.log(`Server running at http://${hostname}:${port}/`);
-});
+server.listen(port, hostname);
