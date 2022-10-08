@@ -10,14 +10,15 @@ class Question
         this.#maxGrade = maxGrade;
     }
 
-    getGrade() { return this.#grade; }
+    GetGrade() { return this.#grade; }
 
-    getMaxGrade() { return this.#maxGrade; }
+    GetMaxGrade() { return this.#maxGrade; }
 
+    /*
     toHTMLStr()
     {
         return "" + this.#grade + "/" + this.#maxGrade;
-    }
+    }*/
 }
 
 class Assesment
@@ -33,14 +34,13 @@ class Assesment
         this.#questions = Array.from(questions);
     }
 
-    getName() { return this.#name; }
+    GetName() { return this.#name; }
 
-    getWeight() { return this.#weight; }
+    GetWeight() { return this.#weight; }
 
-    getNumQuestions() { return this.#questions.length; }
+    GetQuestions() { return this.#questions; }
 
-    getQuestion(index) { return this.#questions[index]; }
-
+    /*
     toHTMLStr()
     {
 
@@ -53,6 +53,7 @@ class Assesment
         htmlStr += "</ul>";
         return htmlStr;
     }
+    */
 }
 
 
@@ -65,17 +66,24 @@ class Database
         this.#assessments = new Array();
     }
 
-    addAssessment(assessment)
+    AddAssessment(assessment)
     {
         this.#assessments.push(assessment);
     }
 
-    loadFromFile(file)
+    RemoveAssessment(index)
+    {
+        this.#assessments.splice(index, 1);
+    }
+
+    GetAssessments() { return this.#assessments; }
+
+    LoadFromFile(file)
     {
         this.#assessments = JSON.parse(file.read());
     }
 
-    saveToFile(file)
+    SaveToFile(file)
     {
         file.write(JSON.stringify(this.#assessments));
     }
@@ -97,6 +105,8 @@ class Database
 // global variables /////////////////////////////////////////////
 const databaseFilepath = "database.json";
 var database;
+
+module.exports = {database};
 
 // functions ///////////////////////////////////////////////////
 
@@ -126,5 +136,51 @@ function initializeDatabase()
     database.appendAllAssessmentsToHTMLBody();
 }
 
+
 // script code
-window.onload = initializeDatabase;
+//window.onload = initializeDatabase;
+
+const http = require("http");
+const fs = require("fs");
+const path = require("path");
+
+function ReadFile(filepath)
+{
+    return fs.readFileSync(path.resolve(filepath));
+}
+
+function ServerRequestListener(request, response)
+{
+    response.statusCode = 200;
+    if (request.url === "/")
+    {
+        //response.setHeader('Content-Type', 'text/html');
+        response.setHeader('Content-Type', 'text/plain');
+        let html = ReadFile("../src/index.html");
+        //response.write();  
+        //response.end();
+        if (html != undefined)
+        {
+            //response.end("<!DOCTYPE html>\n\n<html><head></head><body><p>Webpage loaded successfully</p></body></html>");
+            response.end(html);
+        }
+        else
+        {
+            response.end("<!DOCTYPE html><html><head></head><body><p>Error loading webpage</p></body></html>");
+        }
+    }
+    else
+    {
+        response.setHeader('Content-Type', 'text/plain');
+        response.end("other webpage");
+    }
+}
+
+const hostname = '127.0.0.1';
+const port = 3000;
+
+const server = http.createServer(ServerRequestListener);
+
+server.listen(port, hostname, () => {
+    console.log(`Server running at http://${hostname}:${port}/`);
+});
