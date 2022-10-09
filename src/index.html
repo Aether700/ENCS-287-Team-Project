@@ -2,16 +2,48 @@
 
 <html>
     <head>
+        <link rel="stylesheet" href="index.css">
     </head>
-
     <body>
-        <form action="student.html">
-            <input type="submit" value="Student"/>
-        </form>
+        <div class="header">
+            <h1>Concordia University</h1>
+            <p>Marks and Grades assessment for SOEN 287 for Fall 2022</p>
+        </div>
 
-        <form action="teacher.html">
-            <input type="submit" value="Teacher"/>
-        </form>
+        <div class="login">
+            <h2>Sign In</h2>
+                <form name = "loginForm" action="" method = "post">
+                    <input type="text" name="username" placeholder="Username" required /> <br>
+                    <input type="password" name="password" placeholder="Password" required/> <br><br>
+                    <button type="button" value="Submit" onclick="OnLogin(this.form);">Submit</button>
+                </form>
+        </div>
+        
+        <div class="signup">
+            <h2>Sign Up</h2>
+            <form action="">
+                <p>
+                    I am a
+                    <select name = "user type">
+                    <option> teacher </option>
+                    <option> student </option>
+                    </select>
+                </p>
+                <input type="text" name="fname" placeholder="First name" required /> <br>
+                <input type="text" name="lname" placeholder="Last name" required/> <br>
+                <input type="text" name="username" placeholder="Username" required /> <br>
+                <input type="password" name="password" placeholder="Password" required/> <br><br>
+                <button type="submit" value="Submit">Submit</button>
+                  
+            </form>
+        </div>
+
+        <div class="footer">
+                Website made by ... names
+        </div>
+        <br>
     </body>
+
+    <script src = "login.js"></script>
 
 </html>
