@@ -36,5 +36,13 @@ position: absolute;
 bottom: 0;
 width: 100%;
 }
+.student{
+        padding: 150 px 150 px;
+        text-align: left;
+        background: #ffffff;
+        color: #000000;
+        position: relative;
+        float: left;
+    }
 input:hover {color: #912338; background: rgb(227, 227, 227);}
 input:focus {color: rgb(0, 0, 0); background: rgb(255, 255, 255);}
