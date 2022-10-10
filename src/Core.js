@@ -143,6 +143,7 @@ function initializeDatabase()
 const http = require("http");
 const fs = require("fs");
 const path = require("path");
+const route = require("url");
 
 function ReadFile(filepath)
 {
@@ -151,21 +152,37 @@ function ReadFile(filepath)
 
 function ServerRequestListener(request, response)
 {
+    let p = route.parse(request.url, true);
+    console.log(request.url);
+
+
     switch(request.url)
     {
-        case"/":
+        case "/":
             response.statusCode = 200;
             response.setHeader('Content-Type', 'text/html');
             response.end(ReadFile("../src/index.html"));
             break;
 
-        case"/teacher.html?":
+        case "/index.css":
+            response.statusCode = 200;
+            response.setHeader('Content-Type', 'text/css');
+            response.end(ReadFile("../src/index.css"));
+            break;
+
+        case "/login.js":
+            response.statusCode = 200;
+            response.setHeader('Content-Type', 'text/js');
+            response.end(ReadFile("../src/login.js"));
+            break;
+
+        case "/teacher.html?":
             response.statusCode = 200;
             response.setHeader('Content-Type', 'text/html');
             response.end(ReadFile("../src/teacher.html"));
             break;
 
-        case"/student.html?":
+        case "/student.html?":
             response.statusCode = 200;
             response.setHeader('Content-Type', 'text/html');
             response.end(ReadFile("../src/student.html"));
