@@ -42,13 +42,13 @@ var accounts = new Array();
 
 function InitializeDefaultStaticAccounts()
 {
-    console.log("initializing accounts");
     accounts.push(new Account("teacher", HashPassword("teacher"), AccountType.Teacher));
     accounts.push(new Account("student", HashPassword("student"), AccountType.Student));
 }
 
 function InitializeAccounts()
 {
+    console.log("initializing accounts");
     InitializeDefaultStaticAccounts(); // temporary function, will read from file in the future
 }
 
@@ -56,53 +56,10 @@ function OnLogin(form)
 {
     let username = form.username;
     let passwordHash = HashPassword(form.password);
-    let accountToLogin = accounts.find(function (account)
+    return accounts.find(function (account)
     {
         return account.Validate(username, passwordHash)
     });
-
-    console.log(accounts.length + " accounts");
-    if (accountToLogin != undefined)
-    {
-        console.log("found an account: " + accountToLogin);
-    }
-    else
-    {
-        console.log("no account found");
-    }
-
-    return accountToLogin;
-    /*
-    let accountToLogin = accounts.find(function (account)
-    {
-        return account.Validate(username, passwordHash)
-    });
-
-    if (accountToLogin != undefined)
-    {
-        switch(accountToLogin.GetUserType())
-        {
-            case AccountType.Teacher:
-                location.href = "teacher.html";
-                break;
-
-            case AccountType.Student:
-                location.href = "student.html";
-                break;
-
-            default:
-                alert("Unknown Account Type detected");
-                break;
-        }
-    }
-    else
-    {
-        alert("invalid username and/or password");
-    }
-    */
 }
 
-//window.onload = InitializeAccounts;
-
-//export { OnLogin, Account, AccountType };
 module.exports = { OnLogin, Account, AccountType, InitializeAccounts };
