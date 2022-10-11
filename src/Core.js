@@ -110,7 +110,7 @@ module.exports = {database};
 
 // functions ///////////////////////////////////////////////////
 
-function initializeDatabase()
+function InitializeDatabase()
 {
     database = new Database();
     var databaseFile = new File([], databaseFilepath);
@@ -145,7 +145,8 @@ const fs = require("fs");
 const path = require("path");
 const route = require("url");
 const querystring = require("querystring");
-const login = require("../src/login.js")
+const login = require("../src/login.js");
+let student = require("../src/Student.js");
 
 function ReadFile(filepath)
 {
@@ -212,10 +213,21 @@ function ServerRequestListener(request, response)
             if (account != undefined)
             {
                 response.statusCode = 200;
-                response.setHeader('Content-Type', 'text/plain');
-                console.log(account);
-                //response.end(account.GetUserType());
-                response.end("account found");
+                response.setHeader('Content-Type', 'text/html');
+                switch(account.GetUserType())
+                {
+                    case login.AccountType.Student:
+                        response.end(student.LoadStudentPage(account));
+                        break;
+
+                    case login.AccountType.Teacher:
+                        response.end("<!DOCTYPE html><html><head></head><body><p>Teacher View</p></body></html>");
+                        break;
+
+                    default:
+                        response.statusCode = 404;
+                        response.end("<!DOCTYPE html><html><head></head><body><p>Unknown account type detected</p></body></html>");
+                }
             }
             else
             {

@@ -1,5 +1,5 @@
-var http = require("http");
-const {database} = require("Core.js");
+const http = require("http");
+const core = require("../src/Core.js");
 
 function QuestionToHTMLStrStudent(question)
 {
@@ -18,12 +18,19 @@ function AssessmentToHTMLStrStudent(assessment)
     return htmlStr;
 }
 
-function LoadStudentPage()
+function LoadStudentPage(account)
 {
+    /*
     document.write("loading student page");//temp for debug
-    database.GetAssessments().forEach(function (assessment)
+    core.database.GetAssessments().forEach(function (assessment)
     {
         document.getElementById("body").innerHTML += AssessmentToHTMLStrStudent(assessment);
     });
+    */
+   //temp implementation:
+   return "<!DOCTYPE html><html><head></head><body><p>Student View</p></body></html>";
 }
+
+
+module.exports = { LoadStudentPage };
 
