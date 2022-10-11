@@ -1,5 +1,6 @@
 const http = require("http");
 const core = require("../src/Core.js");
+const util = require("../src/Util.js");
 
 function QuestionToHTMLStrStudent(question)
 {
@@ -28,7 +29,7 @@ function LoadStudentPage(account)
     });
     */
    //temp implementation:
-   return "<!DOCTYPE html><html><head></head><body><p>Student View</p></body></html>";
+   return util.ReadFile("../src/student.html");
 }
 
 

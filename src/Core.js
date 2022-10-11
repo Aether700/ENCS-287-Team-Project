@@ -1,3 +1,11 @@
+const http = require("http");
+const route = require("url");
+const querystring = require("querystring");
+const login = require("../src/login.js");
+const student = require("../src/Student.js");
+const teacher = require("../src/Teacher.js");
+const util = require("../src/Util.js");
+
 // Classes //////////////////////////////////////////////////
 class Question
 {
@@ -106,8 +114,6 @@ class Database
 const databaseFilepath = "database.json";
 var database;
 
-module.exports = {database};
-
 // functions ///////////////////////////////////////////////////
 
 function InitializeDatabase()
@@ -138,20 +144,6 @@ function InitializeDatabase()
 
 
 // script code
-//window.onload = initializeDatabase;
-
-const http = require("http");
-const fs = require("fs");
-const path = require("path");
-const route = require("url");
-const querystring = require("querystring");
-const login = require("../src/login.js");
-let student = require("../src/Student.js");
-
-function ReadFile(filepath)
-{
-    return fs.readFileSync(path.resolve(filepath));
-}
 
 function ServerRequestListener(request, response)
 {
@@ -164,31 +156,31 @@ function ServerRequestListener(request, response)
             case "/":
                 response.statusCode = 200;
                 response.setHeader('Content-Type', 'text/html');
-                response.end(ReadFile("../src/index.html"));
+                response.end(util.ReadFile("../src/index.html"));
                 break;
 
             case "/index.css":
                 response.statusCode = 200;
                 response.setHeader('Content-Type', 'text/css');
-                response.end(ReadFile("../src/index.css"));
+                response.end(util.ReadFile("../src/index.css"));
                 break;
 
             case "/login.js":
                 response.statusCode = 200;
                 response.setHeader('Content-Type', 'text/js');
-                response.end(ReadFile("../src/login.js"));
+                response.end(util.ReadFile("../src/login.js"));
                 break;
 
             case "/teacher.html?":
                 response.statusCode = 200;
                 response.setHeader('Content-Type', 'text/html');
-                response.end(ReadFile("../src/teacher.html"));
+                response.end(util.ReadFile("../src/teacher.html"));
                 break;
 
             case "/student.html?":
                 response.statusCode = 200;
                 response.setHeader('Content-Type', 'text/html');
-                response.end(ReadFile("../src/student.html"));
+                response.end(util.ReadFile("../src/student.html"));
                 break;
 
             default:
@@ -221,7 +213,7 @@ function ServerRequestListener(request, response)
                         break;
 
                     case login.AccountType.Teacher:
-                        response.end("<!DOCTYPE html><html><head></head><body><p>Teacher View</p></body></html>");
+                        response.end(teacher.LoadTeacherPage(account));
                         break;
 
                     default:
@@ -246,3 +238,5 @@ login.InitializeAccounts();
 const server = http.createServer(ServerRequestListener);
 
 server.listen(port, hostname);
+
+module.exports = { database };
