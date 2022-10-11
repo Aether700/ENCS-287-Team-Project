@@ -53,8 +53,16 @@ function InitializeAccounts()
 
 function OnLogin(form)
 {
-    let username = form.username.value;
-    let passwordHash = HashPassword(form.password.value);
+    let username = form.username;
+    let passwordHash = HashPassword(form.password);
+    let accountToLogin = accounts.find(function (account)
+    {
+        return account.Validate(username, passwordHash)
+    });
+
+    console.log(accountToLogin);
+    return accountToLogin;
+    /*
     let accountToLogin = accounts.find(function (account)
     {
         return account.Validate(username, passwordHash)
@@ -81,6 +89,10 @@ function OnLogin(form)
     {
         alert("invalid username and/or password");
     }
+    */
 }
 
-window.onload = InitializeAccounts;
+//window.onload = InitializeAccounts;
+
+//export { OnLogin, Account, AccountType };
+module.exports = { OnLogin, Account, AccountType, InitializeAccounts };

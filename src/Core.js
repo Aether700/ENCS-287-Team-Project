@@ -144,6 +144,8 @@ const http = require("http");
 const fs = require("fs");
 const path = require("path");
 const route = require("url");
+const querystring = require("querystring");
+const login = require("../src/login.js")
 
 function ReadFile(filepath)
 {
@@ -153,46 +155,72 @@ function ReadFile(filepath)
 function ServerRequestListener(request, response)
 {
     let p = route.parse(request.url, true);
-    console.log(request.url);
-
-
-    switch(request.url)
+    
+    if (request.method === "GET")
     {
-        case "/":
-            response.statusCode = 200;
-            response.setHeader('Content-Type', 'text/html');
-            response.end(ReadFile("../src/index.html"));
-            break;
+        switch(request.url)
+        {
+            case "/":
+                response.statusCode = 200;
+                response.setHeader('Content-Type', 'text/html');
+                response.end(ReadFile("../src/index.html"));
+                break;
 
-        case "/index.css":
-            response.statusCode = 200;
-            response.setHeader('Content-Type', 'text/css');
-            response.end(ReadFile("../src/index.css"));
-            break;
+            case "/index.css":
+                response.statusCode = 200;
+                response.setHeader('Content-Type', 'text/css');
+                response.end(ReadFile("../src/index.css"));
+                break;
 
-        case "/login.js":
-            response.statusCode = 200;
-            response.setHeader('Content-Type', 'text/js');
-            response.end(ReadFile("../src/login.js"));
-            break;
+            case "/login.js":
+                response.statusCode = 200;
+                response.setHeader('Content-Type', 'text/js');
+                response.end(ReadFile("../src/login.js"));
+                break;
 
-        case "/teacher.html?":
-            response.statusCode = 200;
-            response.setHeader('Content-Type', 'text/html');
-            response.end(ReadFile("../src/teacher.html"));
-            break;
+            case "/teacher.html?":
+                response.statusCode = 200;
+                response.setHeader('Content-Type', 'text/html');
+                response.end(ReadFile("../src/teacher.html"));
+                break;
 
-        case "/student.html?":
-            response.statusCode = 200;
-            response.setHeader('Content-Type', 'text/html');
-            response.end(ReadFile("../src/student.html"));
-            break;
+            case "/student.html?":
+                response.statusCode = 200;
+                response.setHeader('Content-Type', 'text/html');
+                response.end(ReadFile("../src/student.html"));
+                break;
 
-        default:
-            response.statusCode = 404;
-            response.setHeader('Content-Type', 'text/plain');
-            response.end("Unknown Webpage: " + request.url);
-            break;
+            default:
+                response.statusCode = 404;
+                response.setHeader('Content-Type', 'text/plain');
+                response.end("Unknown Webpage: " + request.url);
+                break;
+        }
+        console.log("using get");
+    }
+    else if (request.method === "POST" || request.method === "PUT")
+    {
+        var rawData = "";
+        request.on("data", function(data)
+        {
+            rawData += data;
+        }).on("end", function()
+        {
+            let form = querystring.parse(rawData);
+            let account = login.OnLogin(form);
+            if (account != undefined)
+            {
+                response.statusCode = 200;
+                response.setHeader('Content-Type', 'text/plain');
+                response.end(account.GetUserType());
+            }
+            else
+            {
+                response.statusCode = 200;
+                response.setHeader('Content-Type', 'text/html');
+                response.end("<!DOCTYPE html><html><head></head><body><p>Wrong username/password</p><p>username: " + form.username + "<br/>password: " + form.password + "</p></body></html>");
+            }
+        });
     }
 }
 
