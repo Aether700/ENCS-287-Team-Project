@@ -208,11 +208,14 @@ function ServerRequestListener(request, response)
         {
             let form = querystring.parse(rawData);
             let account = login.OnLogin(form);
+            
             if (account != undefined)
             {
                 response.statusCode = 200;
                 response.setHeader('Content-Type', 'text/plain');
-                response.end(account.GetUserType());
+                console.log(account);
+                //response.end(account.GetUserType());
+                response.end("account found");
             }
             else
             {
@@ -227,6 +230,7 @@ function ServerRequestListener(request, response)
 const hostname = '127.0.0.1';
 const port = 3000;
 
+login.InitializeAccounts();
 const server = http.createServer(ServerRequestListener);
 
 server.listen(port, hostname);

@@ -42,6 +42,7 @@ var accounts = new Array();
 
 function InitializeDefaultStaticAccounts()
 {
+    console.log("initializing accounts");
     accounts.push(new Account("teacher", HashPassword("teacher"), AccountType.Teacher));
     accounts.push(new Account("student", HashPassword("student"), AccountType.Student));
 }
@@ -60,7 +61,16 @@ function OnLogin(form)
         return account.Validate(username, passwordHash)
     });
 
-    console.log(accountToLogin);
+    console.log(accounts.length + " accounts");
+    if (accountToLogin != undefined)
+    {
+        console.log("found an account: " + accountToLogin);
+    }
+    else
+    {
+        console.log("no account found");
+    }
+
     return accountToLogin;
     /*
     let accountToLogin = accounts.find(function (account)
