@@ -1,5 +1,5 @@
 const http = require("http");
-const core = require("../src/Core.js");
+const database = require("../src/Database.js");
 const util = require("../src/Util.js");
 
 function QuestionToHTMLStrStudent(question)
@@ -12,24 +12,37 @@ function AssessmentToHTMLStrStudent(assessment)
     var htmlStr = "<p>" + assessment.GetName() + "</p><ul>";
     assessment.GetQuestions().forEach(function(question)
     {
-        htmlStr += "<li>"+ QuestionToHTMLStudent(question) + "</li>";
+        htmlStr += "<li>"+ QuestionToHTMLStrStudent(question) + "</li>";
     });
-
+    
     htmlStr += "</ul>";
     return htmlStr;
 }
 
+function GenerateStudentPageHead()
+{
+    return "<head></head>";
+}
+
+function GenerateStudentBody()
+{
+    let body = "<body>";
+    database.database.GetAssessments().forEach(function (assessment)
+    {
+        body += AssessmentToHTMLStrStudent(assessment);
+    });
+    body += "</body>";
+    return body;
+}
+
 function LoadStudentPage(account)
 {
-    /*
-    document.write("loading student page");//temp for debug
-    core.database.GetAssessments().forEach(function (assessment)
-    {
-        document.getElementById("body").innerHTML += AssessmentToHTMLStrStudent(assessment);
-    });
-    */
-   //temp implementation:
-   return util.ReadFile("../src/student.html");
+    console.log("loading student page");
+    let studentPage = util.GenerateHTMLHeader();
+    studentPage += GenerateStudentPageHead();
+    studentPage += GenerateStudentBody();
+    studentPage += util.GenerateHTMLFooter();
+    return studentPage;
 }
 
 
