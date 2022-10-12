@@ -1,7 +1,8 @@
 const fs = require("fs");
 const util = require("../src/Util.js");
 
-const databaseFilepath = "../data/database.json";
+const databaseDirectory = "../data";
+const databaseFilepath = databaseDirectory + "/database.json";
 
 class Question
 {
@@ -17,6 +18,8 @@ class Question
     GetGrade() { return this.#grade; }
 
     GetMaxGrade() { return this.#maxGrade; }
+
+    ToJSONStr() { return "{ \"#grade\":" + this.#grade + ", \"#maxGrade\":" + this.#maxGrade + "}"; }
 }
 
 class Assesment
@@ -37,6 +40,24 @@ class Assesment
     GetWeight() { return this.#weight; }
 
     GetQuestions() { return this.#questions; }
+
+    ToJSONStr() 
+    {
+        let jsonStr = "{ \"#name\":\"" + this.#name + "\", \"#weight\":" + this.#weight + ", \"#question\": [";
+        this.#questions.forEach(function(question)
+        {
+            jsonStr += question.ToJSONStr() + ",";
+        });
+
+        console.log("questions length: " + this.#questions.length);
+        if (this.#questions.length > 0)
+        {
+            jsonStr = jsonStr.slice(0, jsonStr.length - 1);
+        }
+
+        jsonStr += "]}";
+        return jsonStr;
+    }
 }
 
 class Database
@@ -69,7 +90,21 @@ class Database
     SaveToFile()
     {
         console.log("Saving Database To File");
-        fs.writeFile(databaseFilepath, JSON.stringify(this.#assessments), function(err)
+        let data = "[";
+        this.#assessments.forEach(function(assessment)
+        {
+            data += assessment.ToJSONStr() + ",";
+        });
+
+        console.log("assessments length: " + this.#assessments.length);
+        if (this.#assessments.length > 0)
+        {
+            data = data.slice(0, data.length - 1);
+        }
+
+        data += "]";
+        
+        fs.writeFile(databaseFilepath, data, function(err)
         {
             if (err)
             {
@@ -91,6 +126,11 @@ function InitializeDatabase()
     {
         console.log("Generating New Database");
         
+        if (!fs.existsSync(databaseDirectory))
+        {
+            fs.mkdirSync(databaseDirectory);
+        }
+
         //temporary initialization
         var arr = [new Question(4, 6), new Question(6, 10), new Question(10, 25)];
         database.AddAssessment(new Assesment("quizzes", 50, arr));
