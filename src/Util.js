@@ -7,6 +7,17 @@ function ReadFile(filepath)
     return fs.readFileSync(path.resolve(filepath));
 }
 
+function WriteToFile(filepath, data)
+{
+    fs.writeFile(filepath, data, function(err)
+    {
+        if (err)
+        {
+            console.error(err);
+        }
+    });
+}
+
 function GenerateHTMLHeader()
 {
     return "<!DOCTYPE html><html>";
@@ -17,4 +28,4 @@ function GenerateHTMLFooter()
     return "</html>";
 }
 
-module.exports = { ReadFile, GenerateHTMLHeader, GenerateHTMLFooter, dataDirectory };
+module.exports = { ReadFile, WriteToFile, GenerateHTMLHeader, GenerateHTMLFooter, dataDirectory };
