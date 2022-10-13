@@ -37,12 +37,15 @@ function GenerateStudentBody()
 
 function LoadStudentPage(account)
 {
+    /*
     console.log("loading student page");
     let studentPage = util.GenerateHTMLHeader();
     studentPage += GenerateStudentPageHead();
     studentPage += GenerateStudentBody();
     studentPage += util.GenerateHTMLFooter();
     return studentPage;
+    */
+    return util.ReadFile("../src/student.html");
 }
 
 
