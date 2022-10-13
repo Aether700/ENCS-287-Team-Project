@@ -1,11 +1,11 @@
 const http = require("http");
 const route = require("url");
 const querystring = require("querystring");
-const login = require("../src/login.js");
+const login = require("./Login.js");
 const student = require("../src/Student.js");
 const teacher = require("../src/Teacher.js");
 const util = require("../src/Util.js");
-const database = require("../src//Database.js");
+const database = require("../src/Database.js");
 
 function HandleGetRequest(request, response)
 {

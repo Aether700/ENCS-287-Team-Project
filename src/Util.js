@@ -1,5 +1,6 @@
 const fs = require("fs");
 const path = require("path");
+const dataDirectory = "../data";
 
 function ReadFile(filepath)
 {
@@ -16,4 +17,4 @@ function GenerateHTMLFooter()
     return "</html>";
 }
 
-module.exports = { ReadFile, GenerateHTMLHeader, GenerateHTMLFooter };
+module.exports = { ReadFile, GenerateHTMLHeader, GenerateHTMLFooter, dataDirectory };

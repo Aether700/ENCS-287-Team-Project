@@ -1,8 +1,7 @@
 const fs = require("fs");
 const util = require("../src/Util.js");
 
-const databaseDirectory = "../data";
-const databaseFilepath = databaseDirectory + "/database.json";
+const databaseFilepath = util.dataDirectory + "/database.json";
 
 class Question
 {
@@ -19,7 +18,7 @@ class Question
 
     GetMaxGrade() { return this.#maxGrade; }
 
-    ToJSONStr() { return "{ \"#grade\":" + this.#grade + ", \"#maxGrade\":" + this.#maxGrade + "}"; }
+    ToJSONStr() { return "{ \"grade\":" + this.#grade + ", \"maxGrade\":" + this.#maxGrade + "}"; }
 }
 
 class Assesment
@@ -43,13 +42,12 @@ class Assesment
 
     ToJSONStr() 
     {
-        let jsonStr = "{ \"#name\":\"" + this.#name + "\", \"#weight\":" + this.#weight + ", \"#question\": [";
+        let jsonStr = "{ \"name\":\"" + this.#name + "\", \"weight\":" + this.#weight + ", \"questions\": [";
         this.#questions.forEach(function(question)
         {
             jsonStr += question.ToJSONStr() + ",";
         });
 
-        console.log("questions length: " + this.#questions.length);
         if (this.#questions.length > 0)
         {
             jsonStr = jsonStr.slice(0, jsonStr.length - 1);
@@ -62,42 +60,58 @@ class Assesment
 
 class Database
 {
-    #assessments;
+    #assesments;
 
     constructor()
     {
-        this.#assessments = new Array();
+        this.#assesments = new Array();
     }
 
-    AddAssessment(assessment)
+    AddAssessment(assesment)
     {
-        this.#assessments.push(assessment);
+        this.#assesments.push(assesment);
     }
 
     RemoveAssessment(index)
     {
-        this.#assessments.splice(index, 1);
+        this.#assesments.splice(index, 1);
     }
 
-    GetAssessments() { return this.#assessments; }
+    GetAssessments() { return this.#assesments; }
 
     LoadFromFile()
     {
         console.log("Loading Database From File");
-        this.#assessments = JSON.parse(util.ReadFile(databaseFilepath));
+        
+        // contains generic objects not Assessments
+        let tempArr = JSON.parse(util.ReadFile(databaseFilepath));
+        
+        let newArr = new Array();
+        
+        tempArr.forEach(function(obj)
+        {
+            let tempQuestionArr = Array.from(obj.questions);
+            let questions = new Array();
+            tempQuestionArr.forEach(function(questionObj)
+            {
+                questions.push(new Question(questionObj.grade, questionObj.maxGrade));
+            });
+            newArr.push(new Assesment(obj.name, obj.weight, questions));
+        });
+
+        this.#assesments = Array.from(newArr);
     }
 
     SaveToFile()
     {
         console.log("Saving Database To File");
         let data = "[";
-        this.#assessments.forEach(function(assessment)
+        this.#assesments.forEach(function(assesment)
         {
-            data += assessment.ToJSONStr() + ",";
+            data += assesment.ToJSONStr() + ",";
         });
 
-        console.log("assessments length: " + this.#assessments.length);
-        if (this.#assessments.length > 0)
+        if (this.#assesments.length > 0)
         {
             data = data.slice(0, data.length - 1);
         }
@@ -126,12 +140,13 @@ function InitializeDatabase()
     {
         console.log("Generating New Database");
         
-        if (!fs.existsSync(databaseDirectory))
+        if (!fs.existsSync(util.dataDirectory))
         {
-            fs.mkdirSync(databaseDirectory);
+            fs.mkdirSync(util.dataDirectory);
         }
 
         //temporary initialization
+        
         var arr = [new Question(4, 6), new Question(6, 10), new Question(10, 25)];
         database.AddAssessment(new Assesment("quizzes", 50, arr));
         

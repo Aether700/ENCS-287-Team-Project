@@ -1,3 +1,5 @@
+const accountsFile = "accounts.json";
+
 // function responsible for hashing provided passwords
 function HashPassword(password)
 {
@@ -35,6 +37,8 @@ class Account
     {
         return username === this.#username && this.#passwordhash === hashedPassword;
     }
+
+
 }
 
 var accounts = new Array();
