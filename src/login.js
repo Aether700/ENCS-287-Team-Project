@@ -48,39 +48,18 @@ function InitializeDefaultStaticAccounts()
 
 function InitializeAccounts()
 {
+    console.log("initializing accounts");
     InitializeDefaultStaticAccounts(); // temporary function, will read from file in the future
 }
 
 function OnLogin(form)
 {
-    let username = form.username.value;
-    let passwordHash = HashPassword(form.password.value);
-    let accountToLogin = accounts.find(function (account)
+    let username = form.username;
+    let passwordHash = HashPassword(form.password);
+    return accounts.find(function (account)
     {
         return account.Validate(username, passwordHash)
     });
-
-    if (accountToLogin != undefined)
-    {
-        switch(accountToLogin.GetUserType())
-        {
-            case AccountType.Teacher:
-                location.href = "teacher.html";
-                break;
-
-            case AccountType.Student:
-                location.href = "student.html";
-                break;
-
-            default:
-                alert("Unknown Account Type detected");
-                break;
-        }
-    }
-    else
-    {
-        alert("invalid username and/or password");
-    }
 }
 
-window.onload = InitializeAccounts;
+module.exports = { OnLogin, Account, AccountType, InitializeAccounts };
