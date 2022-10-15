@@ -4,10 +4,28 @@ const util = require("../src/Util.js");
 const databaseFilepath = util.dataDirectory + "/database.json";
 const guidFilepath = util.dataDirectory + "/GUID.json";
 const accountsFilepath = util.dataDirectory + "/accounts.json";
-let guidUsed = undefined;
+let guidUsed = new Map();
 var accounts = new Array();
 let students = new Array();
 const maxGUID = 999999;
+
+// enum like const object used to differentiate between student accounts and teacher accounts
+const AccountType = 
+{
+    Student: 0,
+    Teacher: 1
+};
+
+// function responsible for hashing provided passwords
+function HashPassword(password)
+{
+    let hash = 0;
+    for (let i = 0; i < password.length; i++)
+    {
+        hash = (hash + Math.pow(password.charCodeAt(i), i + 1)) % 4093;
+    }
+    return hash;
+}
 
 function AddStudent(studentID)
 {
@@ -15,6 +33,29 @@ function AddStudent(studentID)
     {
         students.push(studentID);
     }
+}
+
+// returns a unique random number between 0 and maxGUID or -1 if the database has not been initialized yet
+function GenerateGUID()
+{
+    if (guidUsed == undefined)
+    {
+        return -1;
+    }
+    
+    let tentativeID = Math.floor(Math.random() * maxGUID);
+    while (guidUsed.has(tentativeID))
+    {
+        tentativeID = Math.floor(Math.random() * maxGUID);
+    }
+    
+    guidUsed.set(tentativeID, tentativeID);
+    return tentativeID;
+}
+
+function IsGUIDValid(guid)
+{
+    return guidUsed.has(guid);
 }
 
 function SaveGUIDs()
@@ -43,36 +84,6 @@ function LoadGUIDs()
         guidUsed.set(guid, guid);
     });
 }
-
-// returns a unique random number between 0 and maxGUID or -1 if the database has not been initialized yet
-function GenerateGUID()
-{
-    if (guidUsed == undefined)
-    {
-        return -1;
-    }
-
-    let tentativeID = Math.floor(Math.random() * maxGUID);
-    while (guidUsed.has(tentativeID))
-    {
-        tentativeID = Math.floor(Math.random() * maxGUID);
-    }
-
-    guidUsed.set(tentativeID, tentativeID);
-    return tentativeID;
-}
-
-function IsGUIDValid(guid)
-{
-    return guidUsed.has(guid);
-}
-
-// enum like const object used to differentiate between student accounts and teacher accounts
-const AccountType = 
-{
-    Student: 0,
-    Teacher: 1
-};
 
 class Account
 {
@@ -235,28 +246,6 @@ class Assesment
         jsonStr += "]}";
         return jsonStr;
     }
-}
-
-
-// function responsible for hashing provided passwords
-function HashPassword(password)
-{
-    let hash = 0;
-    for (let i = 0; i < password.length; i++)
-    {
-        hash = (hash + Math.pow(password.charCodeAt(i), i + 1)) % 4093;
-    }
-    return hash;
-}
-
-function InitializeDefaultStaticAccounts()
-{
-    accounts.push(new Account("teacher", HashPassword("teacher"), 
-    AccountType.Teacher, GenerateGUID()));
-    accounts.push(new Account("student", HashPassword("student"), 
-    AccountType.Student, GenerateGUID()));
-    
-    SaveGUIDs();
 }
 
 function LoadAccounts()
@@ -427,6 +416,16 @@ class User
     }
 }
 
+function InitializeDefaultStaticAccounts()
+{
+    accounts.push(new Account("teacher", HashPassword("teacher"), 
+    AccountType.Teacher, GenerateGUID()));
+    accounts.push(new Account("student", HashPassword("student"), 
+    AccountType.Student, GenerateGUID()));
+    
+    SaveGUIDs();
+}
+
 function InitializeAccounts()
 {
     console.log("Initializing accounts");
@@ -449,10 +448,7 @@ function InitializeAccounts()
 }
 
 function InitializeDatabase()
-{
-    guidUsed = new Map();
-    
-    
+{   
     if (fs.existsSync(guidFilepath))
     {
         LoadGUIDs();

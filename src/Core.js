@@ -109,5 +109,6 @@ const port = 3000;
 
 database.InitializeDatabase();
 const server = http.createServer(ServerRequestListener);
+console.log("\n\nServer Initialization Complete\n");
 
 server.listen(port, hostname);
