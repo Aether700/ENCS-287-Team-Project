@@ -3,13 +3,15 @@ const util = require("../src/Util.js");
 
 const databaseFilepath = util.dataDirectory + "/database.json";
 const guidFilepath = util.dataDirectory + "/GUID.json";
+const accountsFilepath = util.dataDirectory + "/accounts.json";
 let guidUsed = undefined;
+var accounts = new Array();
 let students = new Array();
 const maxGUID = 999999;
 
 function AddStudent(studentID)
 {
-    if (!students.has(studentID))
+    if (!students.includes(studentID))
     {
         students.push(studentID);
     }
@@ -91,6 +93,8 @@ class Account
             AddStudent(this.#id);
         }
     }
+
+    GetID() { return this.#id; }
 
     GetUserType() { return this.#userType; }
 
@@ -233,6 +237,66 @@ class Assesment
     }
 }
 
+
+// function responsible for hashing provided passwords
+function HashPassword(password)
+{
+    let hash = 0;
+    for (let i = 0; i < password.length; i++)
+    {
+        hash = (hash + Math.pow(password.charCodeAt(i), i + 1)) % 4093;
+    }
+    return hash;
+}
+
+function InitializeDefaultStaticAccounts()
+{
+    accounts.push(new Account("teacher", HashPassword("teacher"), 
+    AccountType.Teacher, GenerateGUID()));
+    accounts.push(new Account("student", HashPassword("student"), 
+    AccountType.Student, GenerateGUID()));
+    
+    SaveGUIDs();
+}
+
+function LoadAccounts()
+{
+    console.log("Loading Accounts From File");
+    
+    // contains generic objects not Accounts
+    let tempArr = JSON.parse(util.ReadFile(accountsFilepath));
+    
+    tempArr.forEach(function(account)
+    {
+        accounts.push(new Account(account.username, account.passwordHash, account.userType, account.id));
+    });
+}
+
+function SaveAccounts()
+{
+    console.log("Saving Accounts To File");
+    let data = "[";
+    accounts.forEach(function(account)
+    {
+        data += account.ToJSONStr() + ",";
+    });
+    
+    if (accounts.length > 0)
+    {
+        data = data.slice(0, data.length - 1);
+    }
+    
+    data += "]";
+    
+    fs.writeFile(accountsFilepath, data, function(err)
+    {
+        if (err)
+        {
+            console.error(err);
+        }
+    });
+}
+
 class Database
 {
     #assesments;
@@ -254,10 +318,28 @@ class Database
 
     GetAssessments() { return this.#assesments; }
 
+    // returns undefined if the id provided is invalid
+    GetUserType(id) 
+    {
+        let account = accounts.find(function(account)
+        {
+            return account.GetID() == id;
+        });
+
+        if (account == undefined)
+        {
+            return undefined;
+        }
+        return account.GetUserType();
+    }
+
     LoadFromFile()
     {
         console.log("Loading Database From File");
         
+        LoadAccounts();
+        LoadGUIDs();
+
         // contains generic objects not Assessments
         let tempArr = JSON.parse(util.ReadFile(databaseFilepath));
         
@@ -289,10 +371,14 @@ class Database
     SaveToFile()
     {
         console.log("Saving Database To File");
+        
         if (!fs.existsSync(util.dataDirectory))
         {
             fs.mkdirSync(util.dataDirectory);
         }
+        
+        SaveAccounts();
+        SaveGUIDs();
         
         let data = "[";
         this.#assesments.forEach(function(assesment)
@@ -307,12 +393,7 @@ class Database
         
         data += "]";
         
-        console.log("data:\n" + data);
-
-        console.log("\n\n");
         util.WriteToFile(databaseFilepath, data);
-        console.log("\n\n");
-        console.log("\nDEBUG: finished saving database\n")
     }
 }
 
@@ -322,24 +403,23 @@ var database = new Database();
 class User
 {
     #id;
-    #userType;
     #database;
 
-    constructor(id, userType)
+    constructor(id)
     {
         this.#id = id;
-        this.#userType = userType;
         this.#database = database;
     }
 
     IsValid() { return IsGUIDValid(this.#id); }
 
-    GetType() { return this.#userType; }
+    // returns undefined if this User object is invalid
+    GetType() { return this.#database.GetUserType(this.#id); }
 
     //returns undefined if the User is invalid or if the user is a teacher
     GetGradesForAssessment(assessment)
     {
-        if (this.#userType == AccountType.Teacher)
+        if (this.GetType() == AccountType.Teacher)
         {
             return undefined;
         }
@@ -347,6 +427,26 @@ class User
     }
 }
 
+function InitializeAccounts()
+{
+    console.log("Initializing accounts");
+    if (fs.existsSync(accountsFilepath))
+    {
+        LoadAccounts();
+    }
+    else
+    {
+        console.log("Generating Default Account Data");
+        
+        if (!fs.existsSync(util.dataDirectory))
+        {
+            fs.mkdirSync(util.dataDirectory);
+        }
+        
+        InitializeDefaultStaticAccounts();
+        SaveAccounts();
+    }
+}
 
 function InitializeDatabase()
 {
@@ -358,17 +458,14 @@ function InitializeDatabase()
         LoadGUIDs();
     }
 
+    InitializeAccounts();
+
     if (fs.existsSync(databaseFilepath))
     {
         database.LoadFromFile();
     }
     else
     {
-        // temp /////////////////////////
-        students.push(GenerateGUID());
-        students.push(GenerateGUID());
-        //////////////////////////////////
-        
         console.log("Generating New Database");
         //temporary initialization
         
@@ -382,5 +479,23 @@ function InitializeDatabase()
     }
 }
 
-module.exports = { database, Database, Question, Assesment, Account, AccountType, 
-    InitializeDatabase, GenerateGUID, IsGUIDValid, SaveGUIDs };
+// returns a User object or undefined if no valid account was found
+function OnLogin(form)
+{
+    let username = form.username;
+    let passwordHash = HashPassword(form.password);
+    let accountToLogin = accounts.find(function (account)
+    {
+        return account.Validate(username, passwordHash)
+    });
+
+    if (accountToLogin == undefined)
+    {
+        return undefined;
+    }
+
+    return new User(accountToLogin.GetID());
+}
+
+module.exports = { database, Database, Question, Assesment, Account, User, AccountType, 
+    InitializeDatabase, GenerateGUID, IsGUIDValid, SaveGUIDs, OnLogin };

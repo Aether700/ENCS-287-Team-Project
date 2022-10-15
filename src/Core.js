@@ -1,7 +1,6 @@
 const http = require("http");
 const route = require("url");
 const querystring = require("querystring");
-const login = require("./Login.js");
 const student = require("../src/Student.js");
 const teacher = require("../src/Teacher.js");
 const util = require("../src/Util.js");
@@ -21,12 +20,6 @@ function HandleGetRequest(request, response)
             response.statusCode = 200;
             response.setHeader('Content-Type', 'text/css');
             response.end(util.ReadFile("../src/index.css"));
-            break;
-
-        case "/login.js":
-            response.statusCode = 200;
-            response.setHeader('Content-Type', 'text/js');
-            response.end(util.ReadFile("../src/login.js"));
             break;
 
         case "/teacher.html?":
@@ -52,25 +45,26 @@ function HandleGetRequest(request, response)
 function HandleLoginRequest(request, response, form)
 {
     console.log("handling logging request");
-    let account = login.OnLogin(form);
+    let user = database.OnLogin(form);
             
-    if (account != undefined)
+    if (user != undefined)
     {
         response.statusCode = 200;
         response.setHeader('Content-Type', 'text/html');
-        switch(account.GetUserType())
+        switch(user.GetType())
         {
-            case login.AccountType.Student:
-                response.end(student.LoadStudentPage(account));
+            case database.AccountType.Student:
+                response.end(student.LoadStudentPage(user));
                 break;
 
-            case login.AccountType.Teacher:
-                response.end(teacher.LoadTeacherPage(account));
+            case database.AccountType.Teacher:
+                response.end(teacher.LoadTeacherPage(user));
                     break;
 
             default:
                 response.statusCode = 404;
-                response.end("<!DOCTYPE html><html><head></head><body><p>Unknown account type detected</p></body></html>");
+                response.end("<!DOCTYPE html><html><head></head><body><p>Unknown account type detected: " 
+                    + user.GetType() + "</p></body></html>");
                 break;
         }
     }
@@ -114,9 +108,6 @@ const hostname = '127.0.0.1';
 const port = 3000;
 
 database.InitializeDatabase();
-/*
-login.InitializeAccounts();
 const server = http.createServer(ServerRequestListener);
 
 server.listen(port, hostname);
-*/
