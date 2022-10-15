@@ -22,18 +22,6 @@ function HandleGetRequest(request, response)
             response.end(util.ReadFile("../src/index.css"));
             break;
 
-        case "/teacher.html?":
-            response.statusCode = 200;
-            response.setHeader('Content-Type', 'text/html');
-            response.end(util.ReadFile("../src/teacher.html"));
-            break;
-
-        case "/student.html?":
-            response.statusCode = 200;
-            response.setHeader('Content-Type', 'text/html');
-            response.end(util.ReadFile("../src/student.html"));
-            break;
-
         default:
             response.statusCode = 404;
             response.setHeader('Content-Type', 'text/plain');
