@@ -1,1 +1,0 @@
-[{ "name":"quizzes", "weight":50, "questions": [{ "grade":4, "maxGrade":6},{ "grade":6, "maxGrade":10},{ "grade":10, "maxGrade":25}]},{ "name":"reflection essay", "weight":30, "questions": [{ "grade":5, "maxGrade":5},{ "grade":6, "maxGrade":8},{ "grade":10, "maxGrade":10},{ "grade":6, "maxGrade":7}]}]

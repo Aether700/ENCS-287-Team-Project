@@ -14,43 +14,6 @@ function HashPassword(password)
     return hash;
 }
 
-// enum like const object used to differentiate between student accounts and teacher accounts
-const AccountType = 
-{
-    Student: 0,
-    Teacher: 1
-};
-
-class Account
-{
-    #username;
-    #passwordHash; //for security reasons only store the password hash and not the password itself
-    #userType; // keeps track of if the user is a teacher or a student
-    #id // either the student ID or the teacher's employee id depending on the user type
-
-    constructor(username, passwordHash, userType, id)
-    {
-        this.#username = username;
-        this.#passwordHash = passwordHash;
-        this.#userType = userType;
-        this.#id = id;
-    }
-
-    GetUserType() { return this.#userType; }
-
-    Validate(username, hashedPassword)
-    {
-        return username === this.#username && this.#passwordHash === hashedPassword;
-    }
-
-    ToJSONStr() 
-    {
-        return "{\"username\":\"" + this.#username + "\",\"passwordHash\":" 
-            + this.#passwordHash + ",\"userType\":" + this.#userType + ",\"id\":" + this.#id + "}";
-    }
-
-}
-
 var accounts = new Array();
 
 
@@ -133,4 +96,4 @@ function OnLogin(form)
     });
 }
 
-module.exports = { OnLogin, Account, AccountType, InitializeAccounts };
+module.exports = { OnLogin };

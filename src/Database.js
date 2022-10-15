@@ -4,7 +4,16 @@ const util = require("../src/Util.js");
 const databaseFilepath = util.dataDirectory + "/database.json";
 const guidFilepath = util.dataDirectory + "/GUID.json";
 let guidUsed = undefined;
+let students = new Array();
 const maxGUID = 999999;
+
+function AddStudent(studentID)
+{
+    if (!students.has(studentID))
+    {
+        students.push(studentID);
+    }
+}
 
 function SaveGUIDs()
 {
@@ -56,22 +65,99 @@ function IsGUIDValid(guid)
     return guidUsed.has(guid);
 }
 
+// enum like const object used to differentiate between student accounts and teacher accounts
+const AccountType = 
+{
+    Student: 0,
+    Teacher: 1
+};
+
+class Account
+{
+    #username;
+    #passwordHash; //for security reasons only store the password hash and not the password itself
+    #userType; // keeps track of if the user is a teacher or a student
+    #id; // either the student ID or the teacher's employee id depending on the user type
+
+    constructor(username, passwordHash, userType, id)
+    {
+        this.#username = username;
+        this.#passwordHash = passwordHash;
+        this.#userType = userType;
+        this.#id = id;
+
+        if (this.#userType == AccountType.Student)
+        {
+            AddStudent(this.#id);
+        }
+    }
+
+    GetUserType() { return this.#userType; }
+
+    Validate(username, hashedPassword)
+    {
+        return username === this.#username && this.#passwordHash === hashedPassword;
+    }
+
+    ToJSONStr() 
+    {
+        return "{\"username\":\"" + this.#username + "\",\"passwordHash\":" 
+            + this.#passwordHash + ",\"userType\":" + this.#userType + ",\"id\":" + this.#id + "}";
+    }
+}
+
 class Question
 {
-    #grade;
     #maxGrade;
 
-    constructor(grade, maxGrade)
+    constructor(maxGrade)
     {
-        this.#grade = grade;
         this.#maxGrade = maxGrade;
     }
 
-    GetGrade() { return this.#grade; }
-
     GetMaxGrade() { return this.#maxGrade; }
 
-    ToJSONStr() { return "{ \"grade\":" + this.#grade + ", \"maxGrade\":" + this.#maxGrade + "}"; }
+    ToJSONStr() { return "{\"maxGrade\":" + this.#maxGrade + "}"; }
+}
+
+class AssesmentResult
+{
+    //link assessment?
+    #grades;
+    //comments?
+
+    constructor(grades)
+    {
+        this.#grades = Array.from(grades);
+    }
+
+    GetGrades() { return this.#grades; }
+
+    static DefaultResult(numQuestions)
+    {
+        let grades = new Array();
+        for (let i = 0; i < numQuestions; i++)
+        {
+            grades.push(0);
+        }
+        return new AssesmentResult(grades);
+    }
+
+    ToJSONStr()
+    {
+        let jsonStr = "{\"grades\":[";
+        this.#grades.forEach(function(grade)
+        {
+            jsonStr += grade + ",";
+        });
+
+        if (this.#grades.length > 0)
+        {
+            jsonStr = jsonStr.slice(0, jsonStr.length - 1);
+        }
+        jsonStr += "]}";
+        return jsonStr;
+    }
 }
 
 class Assesment
@@ -79,12 +165,18 @@ class Assesment
     #name;
     #weight;
     #questions;
+    #marks;
 
     constructor(name, weight, questions)
     {
         this.#name = name;
         this.#weight = weight;
         this.#questions = Array.from(questions);
+        this.#marks = new Map();
+        for (let i = 0; i < students.length; i++)
+        {
+            this.#marks.set(students[i], AssesmentResult.DefaultResult(this.#questions.length));
+        }
     }
 
     GetName() { return this.#name; }
@@ -93,9 +185,28 @@ class Assesment
 
     GetQuestions() { return this.#questions; }
 
+    // returns undefined if the id provided is invalid
+    GetMarks(id)
+    {
+        if (!IsGUIDValid(id))
+        {
+            return undefined;
+        }
+        return this.#marks[id];
+    }
+
+    SetMarks(id, marks)
+    {
+        if (IsGUIDValid(id))
+        {
+            this.#marks.set(id, marks);
+        }
+    }
+
     ToJSONStr() 
     {
-        let jsonStr = "{ \"name\":\"" + this.#name + "\", \"weight\":" + this.#weight + ", \"questions\": [";
+        let jsonStr = "{ \"name\":\"" + this.#name + "\", \"weight\":" 
+            + this.#weight + ", \"questions\": [";
         this.#questions.forEach(function(question)
         {
             jsonStr += question.ToJSONStr() + ",";
@@ -106,6 +217,17 @@ class Assesment
             jsonStr = jsonStr.slice(0, jsonStr.length - 1);
         }
 
+        jsonStr += "],\"marks\":[";
+
+        this.#marks.forEach(function(grade, id)
+        {
+            jsonStr += "{\"id\":" + id + ",\"grade\":" + grade.ToJSONStr() + "},";
+        });
+
+        if (this.#marks.size > 0)
+        {
+            jsonStr = jsonStr.slice(0, jsonStr.length - 1);
+        }
         jsonStr += "]}";
         return jsonStr;
     }
@@ -149,7 +271,16 @@ class Database
             {
                 questions.push(new Question(questionObj.grade, questionObj.maxGrade));
             });
-            newArr.push(new Assesment(obj.name, obj.weight, questions));
+
+            let assessmentRead = new Assesment(obj.name, obj.weight, questions);
+
+            let marks = Array.from(obj.marks);
+            marks.forEach(function(mark)
+            {
+                assessmentRead.SetMarks(mark.id, new AssesmentResult(mark.grade));
+            });
+
+            newArr.push(assessmentRead);
         });
 
         this.#assesments = Array.from(newArr);
@@ -176,16 +307,51 @@ class Database
         
         data += "]";
         
+        console.log("data:\n" + data);
+
+        console.log("\n\n");
         util.WriteToFile(databaseFilepath, data);
+        console.log("\n\n");
+        console.log("\nDEBUG: finished saving database\n")
     }
 }
 
 var database = new Database();
 
+// class used to query different parts of the database
+class User
+{
+    #id;
+    #userType;
+    #database;
+
+    constructor(id, userType)
+    {
+        this.#id = id;
+        this.#userType = userType;
+        this.#database = database;
+    }
+
+    IsValid() { return IsGUIDValid(this.#id); }
+
+    GetType() { return this.#userType; }
+
+    //returns undefined if the User is invalid or if the user is a teacher
+    GetGradesForAssessment(assessment)
+    {
+        if (this.#userType == AccountType.Teacher)
+        {
+            return undefined;
+        }
+        return assessment.GetMarks(this.#id);
+    }
+}
+
 
 function InitializeDatabase()
 {
     guidUsed = new Map();
+    
     
     if (fs.existsSync(guidFilepath))
     {
@@ -198,6 +364,11 @@ function InitializeDatabase()
     }
     else
     {
+        // temp /////////////////////////
+        students.push(GenerateGUID());
+        students.push(GenerateGUID());
+        //////////////////////////////////
+        
         console.log("Generating New Database");
         //temporary initialization
         
@@ -207,10 +378,9 @@ function InitializeDatabase()
         arr = [new Question(5, 5), new Question(6, 8), new Question(10, 10), new Question(6, 7)];
         database.AddAssessment(new Assesment("reflection essay", 30, arr));
         //////////////////////////////////////
-
         database.SaveToFile();
     }
 }
 
-module.exports = { database, Database, Question, Assesment, 
+module.exports = { database, Database, Question, Assesment, Account, AccountType, 
     InitializeDatabase, GenerateGUID, IsGUIDValid, SaveGUIDs };

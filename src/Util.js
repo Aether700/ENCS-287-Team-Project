@@ -9,6 +9,7 @@ function ReadFile(filepath)
 
 function WriteToFile(filepath, data)
 {
+    console.log("writing to: " + filepath);
     fs.writeFile(filepath, data, function(err)
     {
         if (err)
