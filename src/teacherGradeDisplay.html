@@ -3,23 +3,58 @@
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Conpatible" content="IE=edge">
-    <meta name="viewport" content="widh=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link rel="stylesheet" type="text/css" href="css/teacher.css">
 </head>
 <body>
-    <div align = "left" class = "title"><h1>Concordia University</h1> </div>
+    <div align = "center" class = "title"><h1>Concordia University</h1> </div>
     <div class="orderNav">
         <ul>
             <li><a href="teacher.html">Main Page</a></li>
             <li><a href="teacherAddAssessment.html">Add assessment for a student</a></li>
         </ul>
     </div>
-    <div align = "center"><h2>SOEN 287 Section Q</h2> </div>
+    <div align = "center"><h2>SOEN 287 Section Q</h2> 
+   
+    </div>
 <!--James' part-->
 
 
+<div class = studentlist>
+    <div>
+        <button class = student>Student 99999999999999999999999 </button>
+            <div class = content>
+                <p> A+++++++++++++++ </p>
+            </div> 
+    </div>
 
     
+        <button class = student>Student 99999999999999999999999 </button>
+            <div class = content>
+                <p> A+++++++++++++++__+++ </p>
+            </div> 
+        
+            
+</div>
+
+<script>
+var coll = document.getElementsByClassName("student");
+var i;
+
+for (i = 0; i < coll.length; i++) {
+  coll[i].addEventListener("click", function() {
+    this.classList.toggle("active");
+    var content = this.nextElementSibling;
+    if (!content.style.display || content.style.display === "block") {
+      content.style.display = "none";
+    } else {
+      content.style.display = "block";
+    }
+  });
+}
+</script>
+
+
 </body>
 </html>
