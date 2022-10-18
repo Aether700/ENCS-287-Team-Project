@@ -1,27 +1,50 @@
+const util = require("../src/Util.js");
+const database = require("../src/Database.js");
 
-function submit() {
-    var fName='Student Grade'
-    var in1 = document.getElementById("in1").value;
-    var in2 = document.getElementById("in2").value;
-    var in3 = document.getElementById("in3").value;
-    var in4 = document.getElementById("in4").value;
-    var in5 = document.getElementById("in5").value;
-    var in6 = document.getElementById("in6").value;
-    var in7 = document.getElementById("in7").value;
+function QuestionToHTMLStrTeacher(question)
+{
+    return question.GetGrade() + "/" + question.GetMaxGrade();
+}
 
-    var inData = "Student Information\n\n" + in1 + "\n" + in2 + "\n" + in3 + "\n" + in4 + "\n" + in5 + "\n" + in6 + "\n" + in7 + "\n"
-        
-    var data2Blob = new File([inData], fName, {type: "text/plain"});
-        
-    var blob2URL = window.URL.createObjectURL(data2Blob);
-        
-     /* Create a HTML anchor tag via JavaScript, and force download */
-        
-    var anchorTag = document.createElement("a");
-        
-    anchorTag.href = blob2URL;
-        
-    anchorTag.download = fName;
-        
-    anchorTag.click();
- }
+function AssessmentToHTMLStrTeacher(assessment)
+{
+    var htmlStr = "<p>" + assessment.GetName() + "</p><ul>";
+    assessment.GetQuestions().forEach(function(question)
+    {
+        htmlStr += "<li>"+ QuestionToHTMLStrTeacher(question) + "</li>";
+    });
+    
+    htmlStr += "</ul>";
+    return htmlStr;
+}
+
+function GenerateTeacherPageHead()
+{
+    return "<head></head>";
+}
+
+function GenerateTeacherBody()
+{
+    let body = "<body>";
+    database.database.GetAssessments().forEach(function (assessment)
+    {
+        body += AssessmentToHTMLStrTeacher(assessment);
+    });
+    body += "</body>";
+    return body;
+}
+
+function LoadTeacherPage(account)
+{
+    /*
+    console.log("loading teacher page");
+    let teacherPage = util.GenerateHTMLHeader();
+    teacherPage += GenerateTeacherPageHead();
+    teacherPage += GenerateTeacherBody();
+    teacherPage += util.GenerateHTMLFooter();
+    return teacherPage;
+    */
+    return util.ReadFile("../src/teacher.html"); 
+}
+
+module.exports = { LoadTeacherPage };

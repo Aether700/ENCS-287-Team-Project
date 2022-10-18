@@ -119,18 +119,16 @@ button class
   text-align: left;
   outline: none;
   font-size: 15px;
-  
- 
 }
 /*
 makes whatever student box the mouse is hovering over darker*/
 .expandable:hover {
   background-color: #666;
 }
+
 /*table class for displaying marks for individual Questions*/
  table{
     border: 1px solid transparent;
-    
     border-collapse: collapse;
     border-spacing: 0px;
     padding: 0px;
