@@ -207,7 +207,8 @@ class Assessment
         {
             return undefined;
         }
-        return this.#marks[id];
+
+        return this.#marks.get(id);
     }
 
     SetMarks(id, marks)
@@ -340,7 +341,7 @@ class Database
             let questions = new Array();
             tempQuestionArr.forEach(function(questionObj)
             {
-                questions.push(new Question(questionObj.grade, questionObj.maxGrade));
+                questions.push(new Question(questionObj.maxGrade));
             });
 
             let assessmentRead = new Assessment(obj.name, obj.weight, questions);
@@ -348,7 +349,7 @@ class Database
             let marks = Array.from(obj.marks);
             marks.forEach(function(mark)
             {
-                assessmentRead.SetMarks(mark.id, new AssessmentResult(mark.grade));
+                assessmentRead.SetMarks(mark.id, new AssessmentResult(mark.grade.grades));
             });
 
             newArr.push(assessmentRead);
@@ -394,10 +395,10 @@ class UserAssessment
     #assessment;
     #results;
 
-    constructor(assessment, results)
+    constructor(assessment, id)
     {
         this.#assessment = assessment;
-        this.#results = results;
+        this.#results = assessment.GetMarks(id);
     }
 
     GetName() { return this.#assessment.GetName(); }
@@ -438,13 +439,22 @@ class User
         return assessment.GetMarks(this.#id);
     }
 
+    // returns undefined if the id is invalid or if the user is not a student
     GetAssessments()
     {
+        if (!this.IsValid() || this.GetType() == AccountType.Teacher)
+        {
+            return undefined;
+        }
+
+        const id = this.#id;
         let assessments = [];
         this.#database.GetAssessments().forEach(function (assessment)
             {
-                database.GetGradesForAssessment(assessment);
+                assessments.push(new UserAssessment(assessment, id));
             });
+
+        return assessments;
     }
 }
 
@@ -497,10 +507,10 @@ function InitializeDatabase()
         console.log("Generating New Database");
         //temporary initialization
         
-        var arr = [new Question(4, 6), new Question(6, 10), new Question(10, 25)];
+        var arr = [new Question(6), new Question(10), new Question(25)];
         database.AddAssessment(new Assessment("quizzes", 50, arr));
         
-        arr = [new Question(5, 5), new Question(6, 8), new Question(10, 10), new Question(6, 7)];
+        arr = [new Question(5), new Question(8), new Question(10), new Question(7)];
         database.AddAssessment(new Assessment("reflection essay", 30, arr));
         //////////////////////////////////////
         database.SaveToFile();
