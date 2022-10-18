@@ -22,29 +22,46 @@
 
 
 <div class = studentlist>
+    <h3 style = "padding: 7px">Student List</h3>
     <div>
-        <button class = student>Student 99999999999999999999999 </button>
+        <button class = expandable>Gaius Julius Caesar Octavianus 30063932</button>
             <div class = content>
                 <p> A+++++++++++++++ </p>
             </div> 
     </div>
 
     
-        <button class = student>Student 99999999999999999999999 </button>
+        <button class = expandable>Gaius Julius Caesar Augustus Germanicus 40074835 </button>
             <div class = content>
-                <p> A+++++++++++++++__+++ </p>
+                <button class = expandable>Assignment1</button>
+                    <table class = content>
+                        <tr>
+                            <th> </th>
+                            <th> Q1 </th>
+                            <th> Q2 </th>
+                            <th> Q3 </th>
+                        </tr>
+                        <tr>
+                            <th> A1 </th>
+                            <td> 0/1 </td>
+                            <td> 1/1 </td>
+                            <td> 1/2 </td>
+                        </tr>
+                    </table>
+
             </div> 
         
             
 </div>
 
 <script>
-var coll = document.getElementsByClassName("student");
+var coll = document.getElementsByClassName("expandable");
 var i;
 
 for (i = 0; i < coll.length; i++) {
   coll[i].addEventListener("click", function() {
     this.classList.toggle("active");
+
     var content = this.nextElementSibling;
     if (!content.style.display || content.style.display === "block") {
       content.style.display = "none";
