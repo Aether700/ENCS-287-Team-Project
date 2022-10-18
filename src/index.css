@@ -1,0 +1,73 @@
+table, th, td 
+{
+    border:1px solid black;
+}
+
+.header 
+{
+    position:absolute;
+    padding: 0.1%;
+    bottom:82%;
+    top:0%;
+    left:0%;
+    right:0%;
+    text-align: center;
+    background: #912338;
+    color: white;    
+}
+
+.login 
+{
+    position: absolute;
+    padding: 2.2%;
+    text-align: left;
+    background: #ffffff;
+    color: #000000;
+    left:20%;
+    top:30%;
+}
+
+.signup 
+{
+    position: absolute;
+    padding: 2.2%;
+    text-align: right;
+    background: #ffffff;
+    color: #000000;
+    margin-right: 20%;
+    left:65%;
+    top:30%;
+}
+
+.footer 
+{
+    position:absolute;
+    padding: 1%;
+    text-align: center;
+    background: #912338;
+    color: white;
+    position: absolute;
+    bottom: 0%;
+    top:92%;
+    left:0%;
+    right:0%;
+}
+
+.student
+{
+    position:absolute;
+    overflow-y: scroll;
+    left:0%;
+    right:0%;
+    bottom: 8%;
+    top: 18%;
+}
+
+input:hover {color: #912338; background: rgb(227, 227, 227);}
+input:focus {color: rgb(0, 0, 0); background: rgb(255, 255, 255);}
+
+body
+{
+    overflow-x: hidden;
+    overflow-y: hidden;
+}
