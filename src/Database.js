@@ -135,7 +135,7 @@ class Question
     ToJSONStr() { return "{\"maxGrade\":" + this.#maxGrade + "}"; }
 }
 
-class AssesmentResult
+class AssessmentResult
 {
     //link assessment?
     #grades;
@@ -155,7 +155,7 @@ class AssesmentResult
         {
             grades.push(0);
         }
-        return new AssesmentResult(grades);
+        return new AssessmentResult(grades);
     }
 
     ToJSONStr()
@@ -175,7 +175,7 @@ class AssesmentResult
     }
 }
 
-class Assesment
+class Assessment
 {
     #name;
     #weight;
@@ -190,7 +190,7 @@ class Assesment
         this.#marks = new Map();
         for (let i = 0; i < students.length; i++)
         {
-            this.#marks.set(students[i], AssesmentResult.DefaultResult(this.#questions.length));
+            this.#marks.set(students[i], AssessmentResult.DefaultResult(this.#questions.length));
         }
     }
 
@@ -288,24 +288,24 @@ function SaveAccounts()
 
 class Database
 {
-    #assesments;
+    #assessments;
 
     constructor()
     {
-        this.#assesments = new Array();
+        this.#assessments = new Array();
     }
 
-    AddAssessment(assesment)
+    AddAssessment(assessment)
     {
-        this.#assesments.push(assesment);
+        this.#assessments.push(assessment);
     }
 
     RemoveAssessment(index)
     {
-        this.#assesments.splice(index, 1);
+        this.#assessments.splice(index, 1);
     }
 
-    GetAssessments() { return this.#assesments; }
+    GetAssessments() { return this.#assessments; }
 
     // returns undefined if the id provided is invalid
     GetUserType(id) 
@@ -343,18 +343,18 @@ class Database
                 questions.push(new Question(questionObj.grade, questionObj.maxGrade));
             });
 
-            let assessmentRead = new Assesment(obj.name, obj.weight, questions);
+            let assessmentRead = new Assessment(obj.name, obj.weight, questions);
 
             let marks = Array.from(obj.marks);
             marks.forEach(function(mark)
             {
-                assessmentRead.SetMarks(mark.id, new AssesmentResult(mark.grade));
+                assessmentRead.SetMarks(mark.id, new AssessmentResult(mark.grade));
             });
 
             newArr.push(assessmentRead);
         });
 
-        this.#assesments = Array.from(newArr);
+        this.#assessments = Array.from(newArr);
     }
 
     SaveToFile()
@@ -370,12 +370,12 @@ class Database
         SaveGUIDs();
         
         let data = "[";
-        this.#assesments.forEach(function(assesment)
+        this.#assessments.forEach(function(assessment)
         {
-            data += assesment.ToJSONStr() + ",";
+            data += assessment.ToJSONStr() + ",";
         });
         
-        if (this.#assesments.length > 0)
+        if (this.#assessments.length > 0)
         {
             data = data.slice(0, data.length - 1);
         }
@@ -387,6 +387,29 @@ class Database
 }
 
 var database = new Database();
+
+//user view of assessments
+class UserAssessment
+{
+    #assessment;
+    #results;
+
+    constructor(assessment, results)
+    {
+        this.#assessment = assessment;
+        this.#results = results;
+    }
+
+    GetName() { return this.#assessment.GetName(); }
+    GetWeight()  { return this.#assessment.GetWeight(); }
+    GetNumQuestions() { return this.#assessment.GetQuestions().length; }
+    GetQuestionGrade(questionIndex) { return this.#results.GetGrades()[questionIndex]; }
+    
+    GetQuestionMaxGrade(questionIndex) 
+    { 
+        return this.#assessment.GetQuestions()[questionIndex].GetMaxGrade(); 
+    }
+}
 
 // class used to query different parts of the database
 class User
@@ -413,6 +436,15 @@ class User
             return undefined;
         }
         return assessment.GetMarks(this.#id);
+    }
+
+    GetAssessments()
+    {
+        let assessments = [];
+        this.#database.GetAssessments().forEach(function (assessment)
+            {
+                database.GetGradesForAssessment(assessment);
+            });
     }
 }
 
@@ -466,10 +498,10 @@ function InitializeDatabase()
         //temporary initialization
         
         var arr = [new Question(4, 6), new Question(6, 10), new Question(10, 25)];
-        database.AddAssessment(new Assesment("quizzes", 50, arr));
+        database.AddAssessment(new Assessment("quizzes", 50, arr));
         
         arr = [new Question(5, 5), new Question(6, 8), new Question(10, 10), new Question(6, 7)];
-        database.AddAssessment(new Assesment("reflection essay", 30, arr));
+        database.AddAssessment(new Assessment("reflection essay", 30, arr));
         //////////////////////////////////////
         database.SaveToFile();
     }
@@ -493,5 +525,5 @@ function OnLogin(form)
     return new User(accountToLogin.GetID());
 }
 
-module.exports = { database, Database, Question, Assesment, Account, User, AccountType, 
+module.exports = { database, Database, Account, User, UserAssessment, AccountType, 
     InitializeDatabase, GenerateGUID, IsGUIDValid, SaveGUIDs, OnLogin };
