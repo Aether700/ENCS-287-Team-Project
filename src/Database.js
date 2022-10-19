@@ -1,5 +1,5 @@
 const fs = require("fs");
-const util = require("../src/Util.js");
+const util = require("../../src/Util.js");
 
 const databaseFilepath = util.dataDirectory + "/database.json";
 const guidFilepath = util.dataDirectory + "/GUID.json";

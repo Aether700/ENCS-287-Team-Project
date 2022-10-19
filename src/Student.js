@@ -1,6 +1,6 @@
 const http = require("http");
-const database = require("../src/Database.js");
-const util = require("../src/Util.js");
+const database = require("../../src/Database.js");
+const util = require("../../src/Util.js");
 
 function QuestionToHTMLStrStudent(question)
 {

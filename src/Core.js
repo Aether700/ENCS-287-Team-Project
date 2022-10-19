@@ -1,10 +1,10 @@
 const http = require("http");
 const route = require("url");
 const querystring = require("querystring");
-const student = require("../src/Student.js");
-const teacher = require("../src/Teacher.js");
-const util = require("../src/Util.js");
-const database = require("../src/Database.js");
+const student = require("../../src/Student.js");
+const teacher = require("../../src/Teacher.js");
+const util = require("../../src/Util.js");
+const database = require("../../src/Database.js");
 
 function HandleGetRequest(request, response)
 {
@@ -13,38 +13,38 @@ function HandleGetRequest(request, response)
         case "/":
             response.statusCode = 200;
             response.setHeader('Content-Type', 'text/html');
-            response.end(util.ReadFile("../src/index.html"));
+            response.end(util.ReadFile("../../src/index.html"));
             break;
 
         case "/index.css":
             response.statusCode = 200;
             response.setHeader('Content-Type', 'text/css');
-            response.end(util.ReadFile("../src/index.css"));
+            response.end(util.ReadFile("../../src/index.css"));
             break;
 
         case "/css/teacher.css":
             response.statusCode = 200;
             response.setHeader('Content-Type', 'text/css');
-            response.end(util.ReadFile("../src/css/teacher.css"));
+            response.end(util.ReadFile("../../src/css/teacher.css"));
             break;
         
         // temporary for demo
         case "/teacher.html":
             response.statusCode = 200;
             response.setHeader('Content-Type', 'text/html');
-            response.end(util.ReadFile("../src/teacher.html"));
+            response.end(util.ReadFile("../../src/teacher.html"));
             break;
 
         case "/teacherGradeDisplay.html":
             response.statusCode = 200;
             response.setHeader('Content-Type', 'text/html');
-            response.end(util.ReadFile("../src/teacherGradeDisplay.html"));
+            response.end(util.ReadFile("../../src/teacherGradeDisplay.html"));
             break;
 
         case "/teacherAddAssessment.html":
             response.statusCode = 200;
             response.setHeader('Content-Type', 'text/html');
-            response.end(util.ReadFile("../src/teacherAddAssessment.html"));
+            response.end(util.ReadFile("../../src/teacherAddAssessment.html"));
             break;
         ////////////////////////////////
 

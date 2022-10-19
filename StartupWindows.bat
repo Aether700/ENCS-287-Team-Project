@@ -1,3 +1,3 @@
-cd Nodejs
-node ../src/Core.js
+cd Nodejs/Windows
+node ../../src/Core.js
 pause
