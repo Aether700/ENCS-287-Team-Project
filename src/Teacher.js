@@ -1,5 +1,5 @@
-const util = require("../../src/Util.js");
-const database = require("../../src/Database.js");
+const util = require("../src/Util.js");
+const database = require("../src/Database.js");
 
 function QuestionToHTMLStrTeacher(question)
 {
@@ -44,7 +44,7 @@ function LoadTeacherPage(account)
     teacherPage += util.GenerateHTMLFooter();
     return teacherPage;
     */
-    return util.ReadFile("../src/teacher.html"); 
+    return util.ReadFile("../../src/teacher.html"); 
 }
 
 module.exports = { LoadTeacherPage };
