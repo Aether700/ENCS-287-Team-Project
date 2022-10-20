@@ -9,12 +9,12 @@ function QuestionToHTMLStrStudent(assessment, index)
 
 function AssessmentToHTMLStrStudent(assessment)
 {
-    var htmlStr = "<p>" + assessment.GetName() + "</p><ul>";
+    var htmlStr = "<p>" + assessment.GetName() + "</p>";
+    htmlStr += "<p>Weight: " + assessment.GetWeight() + "%  Mark: " + assessment.GetGrade() + "/" + assessment.GetMaxGrade() + "</p><ul>";
     for (let i = 0; i < assessment.GetNumQuestions(); i++)
     {
         htmlStr += "<li>" + QuestionToHTMLStrStudent(assessment, i) + "</li>";
     }
-    
     htmlStr += "</ul>";
     return htmlStr;
 }
@@ -27,7 +27,7 @@ function GenerateStudentPageHead()
 function GenerateStudentBody(user)
 {
     let body = "<body>";
-    let assessments = user.GetAssessments();
+    let assessments = user.GetAssessmentsStudent();
     assessments.forEach(function (assessment)
     {
         body += AssessmentToHTMLStrStudent(assessment);

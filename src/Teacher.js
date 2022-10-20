@@ -1,18 +1,21 @@
 const util = require("../src/Util.js");
 const database = require("../src/Database.js");
 
-function QuestionToHTMLStrTeacher(question)
+function QuestionToHTMLStrTeacher(assessment, question, index)
 {
-    return question.GetGrade() + "/" + question.GetMaxGrade();
+    return "On " + question.GetMaxGrade() + "\tAverage: " + assessment.GetQuestionAverage(index);
 }
 
 function AssessmentToHTMLStrTeacher(assessment)
 {
-    var htmlStr = "<p>" + assessment.GetName() + "</p><ul>";
-    assessment.GetQuestions().forEach(function(question)
+    let htmlStr = "<p>" + assessment.GetName() + "</p>";
+    htmlStr += "<p>Weight: " + assessment.GetWeight() + " Class Average: " 
+        + assessment.GetAverage() + "</p><ul>";
+    let questions = assessment.GetQuestions();
+    for (let i = 0; i < questions.length; i++)
     {
-        htmlStr += "<li>"+ QuestionToHTMLStrTeacher(question) + "</li>";
-    });
+        htmlStr += "<li>" + QuestionToHTMLStrTeacher(assessment, questions[i], i) + "</li>";
+    }
     
     htmlStr += "</ul>";
     return htmlStr;
@@ -23,10 +26,11 @@ function GenerateTeacherPageHead()
     return "<head></head>";
 }
 
-function GenerateTeacherBody()
+function GenerateTeacherBody(user)
 {
     let body = "<body>";
-    database.database.GetAssessments().forEach(function (assessment)
+    let assessments = user.GetAssessmentsTeacher();
+    assessments.forEach(function (assessment)
     {
         body += AssessmentToHTMLStrTeacher(assessment);
     });
@@ -34,17 +38,14 @@ function GenerateTeacherBody()
     return body;
 }
 
-function LoadTeacherPage(account)
+function LoadTeacherPage(user)
 {
-    /*
     console.log("loading teacher page");
     let teacherPage = util.GenerateHTMLHeader();
     teacherPage += GenerateTeacherPageHead();
-    teacherPage += GenerateTeacherBody();
+    teacherPage += GenerateTeacherBody(user);
     teacherPage += util.GenerateHTMLFooter();
-    return teacherPage;
-    */
-    return util.ReadFile("../src/teacher.html"); 
+    return teacherPage; 
 }
 
 module.exports = { LoadTeacherPage };

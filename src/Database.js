@@ -146,6 +146,16 @@ class AssessmentResult
         this.#grades = Array.from(grades);
     }
 
+    GetAssessmentGrade()
+    {
+        let sum = 0;
+        this.#grades.forEach(function(mark)
+        {
+            sum += mark;
+        });
+        return sum;
+    }
+
     GetGrades() { return this.#grades; }
 
     static DefaultResult(numQuestions)
@@ -199,6 +209,36 @@ class Assessment
     GetWeight() { return this.#weight; }
 
     GetQuestions() { return this.#questions; }
+
+    GetAverage()
+    {
+        let sum = 0;
+        this.#marks.forEach(function(result)
+        {
+            sum += result.GetAssessmentGrade();
+        });
+        return sum / this.#marks.size;
+    }
+
+    GetMaxGrade()
+    {
+        let sum = 0;
+        this.#questions.forEach(function (question)
+        {
+            sum += question.GetMaxGrade();
+        });
+        return sum;
+    }
+
+    GetQuestionAverage(questionIndex)
+    {
+        let sum = 0;
+        this.#marks.forEach(function(results)
+        {
+            sum += results.GetGrades()[questionIndex];
+        });
+        return sum / this.#marks.size;
+    }
 
     // returns undefined if the id provided is invalid
     GetMarks(id)
@@ -406,10 +446,15 @@ class UserAssessment
     GetNumQuestions() { return this.#assessment.GetQuestions().length; }
     GetQuestionGrade(questionIndex) { return this.#results.GetGrades()[questionIndex]; }
     
+    GetGrade() { return this.#results.GetAssessmentGrade(); }
+    GetAverage() { return this.#assessment.GetAverage(); }
+
     GetQuestionMaxGrade(questionIndex) 
     { 
         return this.#assessment.GetQuestions()[questionIndex].GetMaxGrade(); 
     }
+
+    GetMaxGrade() { return this.#assessment.GetMaxGrade(); }
 }
 
 // class used to query different parts of the database
@@ -429,20 +474,11 @@ class User
     // returns undefined if this User object is invalid
     GetType() { return this.#database.GetUserType(this.#id); }
 
-    //returns undefined if the User is invalid or if the user is a teacher
-    GetGradesForAssessment(assessment)
-    {
-        if (this.GetType() == AccountType.Teacher)
-        {
-            return undefined;
-        }
-        return assessment.GetMarks(this.#id);
-    }
-
     // returns undefined if the id is invalid or if the user is not a student
-    GetAssessments()
+    // returns an array of UserAssessments for this specific student
+    GetAssessmentsStudent()
     {
-        if (!this.IsValid() || this.GetType() == AccountType.Teacher)
+        if (!this.IsValid() || this.GetType() !== AccountType.Student)
         {
             return undefined;
         }
@@ -450,11 +486,22 @@ class User
         const id = this.#id;
         let assessments = [];
         this.#database.GetAssessments().forEach(function (assessment)
-            {
-                assessments.push(new UserAssessment(assessment, id));
-            });
+        {
+            assessments.push(new UserAssessment(assessment, id));
+        });
 
         return assessments;
+    }
+
+    // returns undefined if the id is invalid or if the user is not a teacher
+    // returns an array of Assessments
+    GetAssessmentsTeacher()
+    {
+        if (!this.IsValid() || this.GetType() !== AccountType.Teacher)
+        {
+            return undefined;
+        }
+        return this.#database.GetAssessments();
     }
 }
 
