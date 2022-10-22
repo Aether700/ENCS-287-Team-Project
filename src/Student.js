@@ -45,7 +45,7 @@ function LoadStudentPage(account)
     studentPage += util.GenerateHTMLFooter();
     return studentPage;
     */
-    return util.ReadFile("../../src/student.html");
+    return util.ReadFile("../../src/Student2.html");
 }
 
 

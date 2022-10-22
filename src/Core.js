@@ -29,6 +29,18 @@ function HandleGetRequest(request, response)
             break;
         
         // temporary for demo
+        case "/student.html":
+            response.statusCode = 200;
+            response.setHeader('Content-Type', 'text/html');
+            response.end(util.ReadFile("../../src/student.html"));
+            break;
+
+        case "/style.css":
+            response.statusCode = 200;
+            response.setHeader('Content-Type', 'text/css');
+            response.end(util.ReadFile("../../src/style.css"));
+            break;
+
         case "/teacher.html":
             response.statusCode = 200;
             response.setHeader('Content-Type', 'text/html');

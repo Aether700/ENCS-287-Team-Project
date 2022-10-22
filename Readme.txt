@@ -39,7 +39,9 @@ password: student
 username: teacher
 password: teacher
 
-The student account will lead you to the student view where you can see the different 
+The student account will lead you to the student view with a simple dashboard and a menu 
+on the left side of the screen, while most of the buttons in the menu do not currently have 
+any functionality, the grades button will bring up the grade page where you can see the different 
 grades of the student for the different assessments. Note that for the first deliverable 
 this page is static and only contains dummy grades that do not reflect the contents of the database.
 The actual grades will be displayed dynamically for each student in the next deliverables.
