@@ -13,16 +13,55 @@ function HandleGetRequest(request, response)
         case "/":
             response.statusCode = 200;
             response.setHeader('Content-Type', 'text/html');
-            response.end(util.ReadFile("../src/index.html"));
+            response.end(util.ReadFile("../../src/index.html"));
             break;
 
         case "/index.css":
             response.statusCode = 200;
             response.setHeader('Content-Type', 'text/css');
-            response.end(util.ReadFile("../src/index.css"));
+            response.end(util.ReadFile("../../src/index.css"));
             break;
 
+        case "/css/teacher.css":
+            response.statusCode = 200;
+            response.setHeader('Content-Type', 'text/css');
+            response.end(util.ReadFile("../../src/css/teacher.css"));
+            break;
+        
+        // temporary for demo
+        case "/student.html":
+            response.statusCode = 200;
+            response.setHeader('Content-Type', 'text/html');
+            response.end(util.ReadFile("../../src/student.html"));
+            break;
+
+        case "/style.css":
+            response.statusCode = 200;
+            response.setHeader('Content-Type', 'text/css');
+            response.end(util.ReadFile("../../src/style.css"));
+            break;
+
+        case "/teacher.html":
+            response.statusCode = 200;
+            response.setHeader('Content-Type', 'text/html');
+            response.end(util.ReadFile("../../src/teacher.html"));
+            break;
+
+        case "/teacherGradeDisplay.html":
+            response.statusCode = 200;
+            response.setHeader('Content-Type', 'text/html');
+            response.end(util.ReadFile("../../src/teacherGradeDisplay.html"));
+            break;
+
+        case "/teacherAddAssessment.html":
+            response.statusCode = 200;
+            response.setHeader('Content-Type', 'text/html');
+            response.end(util.ReadFile("../../src/teacherAddAssessment.html"));
+            break;
+        ////////////////////////////////
+
         default:
+            console.log("Unknown Webpage: " + request.url);
             response.statusCode = 404;
             response.setHeader('Content-Type', 'text/plain');
             response.end("Unknown Webpage: " + request.url);
