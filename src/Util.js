@@ -1,6 +1,6 @@
 const fs = require("fs");
 const path = require("path");
-const dataDirectory = "../data";
+const dataDirectory = "../../data";
 
 function ReadFile(filepath)
 {

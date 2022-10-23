@@ -1,9 +1,5 @@
-#! bin/bash
-
-function pause(){
-   read -p "$*"
-}
-
-cd Nodejs
-node ../src/Core.js
-pause 'Press any key to close'
+#!/bin/bash
+cd $(dirname $0)
+cd Nodejs/Linux
+node ../../src/Core.js
+read -n1 -r -p "Press any key to close" key

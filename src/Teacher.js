@@ -44,7 +44,7 @@ function LoadTeacherPage(account)
     teacherPage += util.GenerateHTMLFooter();
     return teacherPage;
     */
-    return util.ReadFile("../src/teacher.html"); 
+    return util.ReadFile("../../src/teacher.html"); 
 }
 
 module.exports = { LoadTeacherPage };
