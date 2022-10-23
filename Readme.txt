@@ -7,15 +7,24 @@ To launch the server:
 - if you are on mac click and run the StartupMac.sh script.
 - if you are on linux click and run the StartupLinux.sh script
 
+Note that if you are on Mac, you will need to have both bash (which usually comes with your macOS) 
+and node.js installed. You can then run the scripts. On Linux and Mac you might have to allow the 
+file to be executed using the chmod command. 
+
+If you need to use the chmod command you can navigate to the folder containing the script and execute
+"chmod 555 <script name>". For example, if you are on mac you would do "chmod 555 StartupMac.sh".
+
 if none of the above worked open up your command line terminal and 
 navigate to the Nodejs folder and then go into the folder of your 
-platform (ex: on windows go to Nodejs/Windows), then enter one of the two commands following: 
+platform (ex: on windows go to Nodejs/Windows). On Mac you can simply navigate 
+into the Linux folder as there is no Mac folder inside the Nodejs folder. 
+Once you have navigated to the proper folder you can enter one of the two commands following: 
 
 "node ../../src/Core.js" 
 "./node ../../src/Core.js" 
 
 to start the server. Note that you might have to download Node.js for your 
-platform if you do not already have it installed 
+platform if you do not already have it installed.
 
 Once the server is running, to connect to the website
 open your browser and connect to "localhost:3000"
