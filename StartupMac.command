@@ -1,3 +1,3 @@
 cd Nodejs/Linux
 ./node ../../src/Core.js
-suspend-script StartupMac.command
+read -n1 -r -p "Press any key to close" key
