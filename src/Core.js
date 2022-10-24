@@ -34,9 +34,10 @@ function GeneratePage(request, response, user, url)
             case "home":
                 response.statusCode = 200;
                 response.setHeader('Content-Type', 'text/html');
-                response.end(student.LoadStudentPage(user));
+                response.end(student.LoadStudentHomePage(user));
                 break;
 
+            // temporary code for demonstration purposes
             case "test":
                 response.statusCode = 200;
                 response.setHeader('Content-Type', 'text/html');
@@ -44,6 +45,7 @@ function GeneratePage(request, response, user, url)
                     + "<input type = \"button\" onclick = \"window.location.href=\'/student/home/" 
                     + user.GetID() +  "\'\" value = \"Go to Test Page\"></body></html>");
                 break;
+            /////////////////////////////////////////////////
 
             default:
                 response.statusCode = 404;
@@ -70,7 +72,7 @@ function GeneratePage(request, response, user, url)
             case "home":
                 response.statusCode = 200;
                 response.setHeader('Content-Type', 'text/html');
-                response.end(teacher.LoadTeacherPage(user));
+                response.end(teacher.LoadTeacherHomePage(user));
                 break;
 
             default:

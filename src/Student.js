@@ -40,9 +40,9 @@ function GenerateStudentBody(user)
     return body;
 }
 
-function LoadStudentPage(user)
+function LoadStudentHomePage(user)
 {
-    console.log("loading page for student ID:" + user.GetID());
+    console.log("loading /student/home/" + user.GetID());
     let studentPage = util.GenerateHTMLHeader();
     studentPage += GenerateStudentPageHead();
     studentPage += GenerateStudentBody(user);
@@ -51,5 +51,5 @@ function LoadStudentPage(user)
 }
 
 
-module.exports = { LoadStudentPage };
+module.exports = { LoadStudentHomePage };
 

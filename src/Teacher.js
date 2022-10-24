@@ -38,9 +38,9 @@ function GenerateTeacherBody(user)
     return body;
 }
 
-function LoadTeacherPage(user)
+function LoadTeacherHomePage(user)
 {
-    console.log("loading teacher page");
+    console.log("loading /teacher/home/" + user.GetID());
     let teacherPage = util.GenerateHTMLHeader();
     teacherPage += GenerateTeacherPageHead();
     teacherPage += GenerateTeacherBody(user);
@@ -48,4 +48,4 @@ function LoadTeacherPage(user)
     return teacherPage; 
 }
 
-module.exports = { LoadTeacherPage };
+module.exports = { LoadTeacherHomePage };
