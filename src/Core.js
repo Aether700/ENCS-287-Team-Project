@@ -6,66 +6,120 @@ const teacher = require("../src/Teacher.js");
 const util = require("../src/Util.js");
 const database = require("../src/Database.js");
 
+function GeneratePage(request, response, user, url)
+{
+    if (url[0] == "/")
+    {
+        url = url.slice(1);
+    }
+    let currPos = url.indexOf("/");
+    let nextDir = url.slice(0, currPos);
+    url = url.slice(currPos + 1);
+    currPos = url.indexOf("/");
+    if (nextDir.valueOf() == "student")
+    {
+        if (currPos == -1)
+        {
+            nextDir = url;
+        }
+        else
+        {
+            nextDir = url.slice(0, currPos);
+            url = url.slice(currPos + 1);
+            currPos = url.indexOf("/");
+        }
+
+        switch(nextDir)
+        {
+            case "home":
+                response.statusCode = 200;
+                response.setHeader('Content-Type', 'text/html');
+                response.end(student.LoadStudentPage(user));
+                break;
+
+            case "test":
+                response.statusCode = 200;
+                response.setHeader('Content-Type', 'text/html');
+                response.end("<!DOCTYPE html><html><head></head><body><p>student page generated</p>"
+                    + "<input type = \"button\" onclick = \"window.location.href=\'/student/home/" 
+                    + user.GetID() +  "\'\" value = \"Go to Test Page\"></body></html>");
+                break;
+
+            default:
+                response.statusCode = 404;
+                response.setHeader('Content-Type', 'text/plain');
+                response.end("Unknown Webpage: " + request.url);
+                break;
+        }
+    }
+    else if (nextDir == "teacher")
+    {
+        if (currPos == -1)
+        {
+            nextDir = url;
+        }
+        else
+        {
+            nextDir = url.slice(0, currPos);
+            url = url.slice(currPos + 1);
+            currPos = url.indexOf("/");
+        }
+
+        switch(nextDir)
+        {
+            case "home":
+                response.statusCode = 200;
+                response.setHeader('Content-Type', 'text/html');
+                response.end(teacher.LoadTeacherPage(user));
+                break;
+
+            default:
+                response.statusCode = 404;
+                response.setHeader('Content-Type', 'text/plain');
+                response.end("Unknown Webpage: " + request.url);
+                break;
+        }
+    }
+    else
+    {
+        response.statusCode = 404;
+        response.setHeader('Content-Type', 'text/plain');
+        response.end("Unknown Webpage: " + request.url);
+    }
+}
+
 function HandleGetRequest(request, response)
 {
-    switch(request.url)
+    let indexLastSlash = request.url.lastIndexOf("/");
+    let id = parseInt(request.url.slice(indexLastSlash + 1));
+    if (isNaN(id))
     {
-        case "/":
-            response.statusCode = 200;
-            response.setHeader('Content-Type', 'text/html');
-            response.end(util.ReadFile("../../src/index.html"));
-            break;
+        switch(request.url)
+        {
+            case "/":
+                response.statusCode = 200;
+                response.setHeader('Content-Type', 'text/html');
+                response.end(util.ReadFile("../../src/index.html"));
+                break;
 
-        case "/index.css":
-            response.statusCode = 200;
-            response.setHeader('Content-Type', 'text/css');
-            response.end(util.ReadFile("../../src/index.css"));
-            break;
+            case "/index.css":
+                response.statusCode = 200;
+                response.setHeader('Content-Type', 'text/css');
+                response.end(util.ReadFile("../../src/index.css"));
+                break;
 
-        case "/css/teacher.css":
-            response.statusCode = 200;
-            response.setHeader('Content-Type', 'text/css');
-            response.end(util.ReadFile("../../src/css/teacher.css"));
-            break;
-        
-        // temporary for demo
-        case "/student.html":
-            response.statusCode = 200;
-            response.setHeader('Content-Type', 'text/html');
-            response.end(util.ReadFile("../../src/student.html"));
-            break;
-
-        case "/style.css":
-            response.statusCode = 200;
-            response.setHeader('Content-Type', 'text/css');
-            response.end(util.ReadFile("../../src/style.css"));
-            break;
-
-        case "/teacher.html":
-            response.statusCode = 200;
-            response.setHeader('Content-Type', 'text/html');
-            response.end(util.ReadFile("../../src/teacher.html"));
-            break;
-
-        case "/teacherGradeDisplay.html":
-            response.statusCode = 200;
-            response.setHeader('Content-Type', 'text/html');
-            response.end(util.ReadFile("../../src/teacherGradeDisplay.html"));
-            break;
-
-        case "/teacherAddAssessment.html":
-            response.statusCode = 200;
-            response.setHeader('Content-Type', 'text/html');
-            response.end(util.ReadFile("../../src/teacherAddAssessment.html"));
-            break;
-        ////////////////////////////////
-
-        default:
-            console.log("Unknown Webpage: " + request.url);
-            response.statusCode = 404;
-            response.setHeader('Content-Type', 'text/plain');
-            response.end("Unknown Webpage: " + request.url);
-            break;
+            default:
+                console.log("Unknown Webpage: " + request.url);
+                response.statusCode = 404;
+                response.setHeader('Content-Type', 'text/plain');
+                response.end("Unknown Webpage: " + request.url);
+                break;
+        }
+    }
+    else
+    {
+        GeneratePage(request, response, new database.User(id), 
+            request.url.slice(0, indexLastSlash));
     }
 }
 
@@ -81,12 +135,12 @@ function HandleLoginRequest(request, response, form)
         switch(user.GetType())
         {
             case database.AccountType.Student:
-                response.end(student.LoadStudentPage(user));
+                GeneratePage(request, response, user, "/student/home");
                 break;
 
             case database.AccountType.Teacher:
-                response.end(teacher.LoadTeacherPage(user));
-                    break;
+                GeneratePage(request, response, user, "/teacher/home");
+                break;
 
             default:
                 response.statusCode = 404;

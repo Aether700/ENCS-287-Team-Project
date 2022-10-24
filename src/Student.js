@@ -27,6 +27,10 @@ function GenerateStudentPageHead()
 function GenerateStudentBody(user)
 {
     let body = "<body>";
+    //temp////
+    body += "<input type = \"button\" onclick = \"window.location.href=\'"
+        + "/student/test/" + user.GetID() +  "\'\" value = \"Go to Test Page\">";
+    //////////
     let assessments = user.GetAssessmentsStudent();
     assessments.forEach(function (assessment)
     {
@@ -38,7 +42,7 @@ function GenerateStudentBody(user)
 
 function LoadStudentPage(user)
 {
-    console.log("loading student page");
+    console.log("loading page for student ID:" + user.GetID());
     let studentPage = util.GenerateHTMLHeader();
     studentPage += GenerateStudentPageHead();
     studentPage += GenerateStudentBody(user);
