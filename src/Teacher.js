@@ -10,7 +10,16 @@ function AssessmentToHTMLStrTeacher(assessment)
 {
     let htmlStr = "<p>" + assessment.GetName() + "</p>";
     htmlStr += "<p>Weight: " + assessment.GetWeight() + " Class Average: " 
-        + assessment.GetAverage() + "</p><ul>";
+        + assessment.GetAverage() + "</p>";
+
+    htmlStr += "<p>Distribution</p><ul>";
+    let distribution = assessment.GetDistribution();
+    distribution.forEach(function(numStudents, grade)
+    {
+        htmlStr += "<li>Grade: " + grade + " Number of Students: " + numStudents + "</li>";
+    });
+    htmlStr += "</ul><ul>";
+
     let questions = assessment.GetQuestions();
     for (let i = 0; i < questions.length; i++)
     {

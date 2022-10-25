@@ -240,6 +240,25 @@ class Assessment
         return sum / this.#marks.size;
     }
 
+    // returns a map with the grades as key and the number of students as elements
+    GetDistribution()
+    {
+        let distribution = new Map();
+        this.#marks.forEach(function (mark, id)
+        {
+            let grade = mark.GetAssessmentGrade();
+            if (distribution.has(grade))
+            {
+                distribution[grade] = distribution[grade] + 1;
+            }
+            else
+            {
+                distribution.set(grade, 1);
+            }
+        });
+        return distribution;
+    }
+
     // returns undefined if the id provided is invalid
     GetMarks(id)
     {
