@@ -1,1 +1,32 @@
-[{ "name":"quizzes", "weight":50, "questions": [{"maxGrade":6},{"maxGrade":10},{"maxGrade":25}],"marks":[{"id":731755,"grade":{"grades":[0,0,0]}}]},{ "name":"reflection essay", "weight":30, "questions": [{"maxGrade":5},{"maxGrade":8},{"maxGrade":10},{"maxGrade":7}],"marks":[{"id":731755,"grade":{"grades":[0,0,0,0]}}]}]
+[
+    { 
+        "name":"quizzes", 
+        "weight":50, 
+        "questions": 
+        [
+            {"maxGrade":6},
+            {"maxGrade":10},
+            {"maxGrade":25}],
+            "marks":
+            [
+                {"id":645258,"grade":{"grades":[0,0,0]}},
+                {"id":432483,"grade":{"grades":[4,8,24]}}
+            ]
+    },
+    { 
+        "name":"reflection essay", 
+        "weight":30, 
+        "questions": 
+        [
+            {"maxGrade":5},
+            {"maxGrade":8},
+            {"maxGrade":10},
+            {"maxGrade":7}
+        ],
+        "marks":
+        [
+            {"id":645258,"grade":{"grades":[5,7,9,5]}},
+            {"id":432483,"grade":{"grades":[0,0,0,0]}}
+        ]
+    }
+]

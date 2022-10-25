@@ -27,6 +27,10 @@ function GenerateStudentPageHead()
 function GenerateStudentBody(user)
 {
     let body = "<body>";
+    //temp////
+    body += "<input type = \"button\" onclick = \"window.location.href=\'"
+        + "/student/test/" + user.GetID() +  "\'\" value = \"Go to Test Page\">";
+    //////////
     let assessments = user.GetAssessmentsStudent();
     assessments.forEach(function (assessment)
     {
@@ -36,9 +40,9 @@ function GenerateStudentBody(user)
     return body;
 }
 
-function LoadStudentPage(user)
+function LoadStudentHomePage(user)
 {
-    console.log("loading student page");
+    console.log("loading /student/home/" + user.GetID());
     let studentPage = util.GenerateHTMLHeader();
     studentPage += GenerateStudentPageHead();
     studentPage += GenerateStudentBody(user);
@@ -47,5 +51,5 @@ function LoadStudentPage(user)
 }
 
 
-module.exports = { LoadStudentPage };
+module.exports = { LoadStudentHomePage };
 

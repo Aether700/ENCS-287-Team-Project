@@ -471,6 +471,8 @@ class User
 
     IsValid() { return IsGUIDValid(this.#id); }
 
+    GetID() { return this.#id; }
+
     // returns undefined if this User object is invalid
     GetType() { return this.#database.GetUserType(this.#id); }
 
@@ -510,6 +512,8 @@ function InitializeDefaultStaticAccounts()
     accounts.push(new Account("teacher", HashPassword("teacher"), 
     AccountType.Teacher, GenerateGUID()));
     accounts.push(new Account("student", HashPassword("student"), 
+    AccountType.Student, GenerateGUID()));
+    accounts.push(new Account("student2", HashPassword("student2"), 
     AccountType.Student, GenerateGUID()));
     
     SaveGUIDs();
