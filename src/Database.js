@@ -278,6 +278,33 @@ class Assessment
         }
     }
 
+    ComputeRankPercentileOfStudent(studentID)
+    {
+        if (!IsGUIDValid(studentID) || new User(studentID).GetType() != AccountType.Student)
+        {
+            return;
+        }
+
+        let distribution = this.GetDistribution();
+        let studentGrade = this.#marks.get(studentID).GetAssessmentGrade();
+
+        let cummulative = 0;
+        let frequencyOfStudentGrade = 0;
+        distribution.forEach(function(numStudents, grade)
+        {
+            if (grade < studentGrade)
+            {
+                cummulative += numStudents;
+            }
+            else if (grade == studentGrade)
+            {
+                frequencyOfStudentGrade = numStudents;
+            }
+        });
+
+        return ((cummulative + (0.5 * frequencyOfStudentGrade)) / students.length) * 100;
+    }
+
     ToJSONStr() 
     {
         let jsonStr = "{ \"name\":\"" + this.#name + "\", \"weight\":" 
@@ -453,11 +480,13 @@ class UserAssessment
 {
     #assessment;
     #results;
+    #id;
 
     constructor(assessment, id)
     {
         this.#assessment = assessment;
         this.#results = assessment.GetMarks(id);
+        this.#id = id;
     }
 
     GetName() { return this.#assessment.GetName(); }
@@ -474,6 +503,8 @@ class UserAssessment
     }
 
     GetMaxGrade() { return this.#assessment.GetMaxGrade(); }
+
+    GetRankPercentile() { return this.#assessment.ComputeRankPercentileOfStudent(this.#id); }
 }
 
 // class used to query different parts of the database
