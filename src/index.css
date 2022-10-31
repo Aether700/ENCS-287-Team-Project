@@ -57,7 +57,7 @@ table, th, td
 {
     position:absolute;
     overflow-y: scroll;
-    left:0%;
+    left:10%;
     right:0%;
     bottom: 8%;
     top: 18%;
