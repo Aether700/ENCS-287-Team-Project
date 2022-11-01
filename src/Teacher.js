@@ -18,7 +18,14 @@ function AssessmentToHTMLStrTeacher(assessment)
     {
         htmlStr += "<li>Grade: " + grade + " Number of Students: " + numStudents + "</li>";
     });
-    htmlStr += "</ul><ul>";
+
+    htmlStr += "</ul><p>Marks:</p><ul>";
+    let totals = assessment.GetTotals();
+    totals.forEach(function (total, id)
+    {
+        htmlStr += "<li>ID: " + id + " Total: " + total + "</li>";
+    });
+    htmlStr += "</ul><p>Questions:</p><ul>";
 
     let questions = assessment.GetQuestions();
     for (let i = 0; i < questions.length; i++)

@@ -210,6 +210,17 @@ class Assessment
 
     GetQuestions() { return this.#questions; }
 
+    //returns a Map object with the id as key and the total grade for the assessment as value
+    GetTotals()
+    {
+        let totals = new Map();
+        this.#marks.forEach(function(result, id)
+        {
+            totals.set(id, result.GetAssessmentGrade());
+        });
+        return totals;
+    }
+
     GetAverage()
     {
         let sum = 0;
