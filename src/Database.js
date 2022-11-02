@@ -549,7 +549,7 @@ class User
     // if the user is invalid or is not a student, will return undefined
     GetFinalGrade()
     {
-        if (this.IsValid() || this.GetType() !== AccountType.Student)
+        if (!this.IsValid() || this.GetType() !== AccountType.Student)
         {
             return undefined;
         }

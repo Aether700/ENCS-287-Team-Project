@@ -16,9 +16,7 @@ function AssessmentToHTMLStrStudent(assessment)
     {
         htmlStr += "&emsp;Question " + (i+1) + "&emsp;&emsp;&emsp;" + QuestionToHTMLStrStudent(assessment, i) + "<br>";
     }
-
-    var totalWeight = (Math.round((assessment.GetGrade()*assessment.GetWeight())/assessment.GetMaxGrade()*100)/100).toFixed(2);
-    htmlStr +=  "<p>Weight: &emsp;&emsp;&emsp;&emsp;&emsp;" + totalWeight + "/" + assessment.GetWeight() + "</p><br>";
+    htmlStr +=  "<p>Weight: &emsp;&emsp;&emsp;&emsp;&emsp;" + ((assessment.GetWeightedGrade()*100)/100).toFixed(2) + "/" + assessment.GetWeight() + "</p><br>";
 
     //insert stats here
 
@@ -35,7 +33,7 @@ function GenerateStudentBody(user)
     let body = "<body>";
     //temp////
     body += "<input type = \"button\" onclick = \"window.location.href=\'"
-        + "/student/test/" + user.GetID() +  "\'\" value = \"Go to Test Page\">";
+        + "/student/test/" + user.GetID() +  "\'\" value = \"Go back to main page\">";
     //////////
 
     let assessments = user.GetAssessmentsStudent();
@@ -43,10 +41,10 @@ function GenerateStudentBody(user)
     {
         body += AssessmentToHTMLStrStudent(assessment);
     });
-    body += "</body>";
+    
+    body += "<p>Total: &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;" + user.GetFinalGrade() + "/100</p>";
 
-    //insert cumulative grade
-    body += "<p>Total: &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;" + "/100</p>"; 
+    body += "</body>";
 
     return body;
 }
