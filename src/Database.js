@@ -210,6 +210,17 @@ class Assessment
 
     GetQuestions() { return this.#questions; }
 
+    //returns a Map object with the id as key and the total grade for the assessment as value
+    GetTotals()
+    {
+        let totals = new Map();
+        this.#marks.forEach(function(result, id)
+        {
+            totals.set(id, result.GetAssessmentGrade());
+        });
+        return totals;
+    }
+
     GetAverage()
     {
         let sum = 0;
@@ -240,6 +251,25 @@ class Assessment
         return sum / this.#marks.size;
     }
 
+    // returns a map with the grades as key and the number of students as elements
+    GetDistribution()
+    {
+        let distribution = new Map();
+        this.#marks.forEach(function (mark, id)
+        {
+            let grade = mark.GetAssessmentGrade();
+            if (distribution.has(grade))
+            {
+                distribution[grade] = distribution[grade] + 1;
+            }
+            else
+            {
+                distribution.set(grade, 1);
+            }
+        });
+        return distribution;
+    }
+
     // returns undefined if the id provided is invalid
     GetMarks(id)
     {
@@ -257,6 +287,33 @@ class Assessment
         {
             this.#marks.set(id, marks);
         }
+    }
+
+    ComputeRankPercentileOfStudent(studentID)
+    {
+        if (!IsGUIDValid(studentID) || new User(studentID).GetType() != AccountType.Student)
+        {
+            return;
+        }
+
+        let distribution = this.GetDistribution();
+        let studentGrade = this.#marks.get(studentID).GetAssessmentGrade();
+
+        let cummulative = 0;
+        let frequencyOfStudentGrade = 0;
+        distribution.forEach(function(numStudents, grade)
+        {
+            if (grade < studentGrade)
+            {
+                cummulative += numStudents;
+            }
+            else if (grade == studentGrade)
+            {
+                frequencyOfStudentGrade = numStudents;
+            }
+        });
+
+        return ((cummulative + (0.5 * frequencyOfStudentGrade)) / students.length) * 100;
     }
 
     ToJSONStr() 
@@ -434,11 +491,13 @@ class UserAssessment
 {
     #assessment;
     #results;
+    #id;
 
     constructor(assessment, id)
     {
         this.#assessment = assessment;
         this.#results = assessment.GetMarks(id);
+        this.#id = id;
     }
 
     GetName() { return this.#assessment.GetName(); }
@@ -455,6 +514,8 @@ class UserAssessment
     }
 
     GetMaxGrade() { return this.#assessment.GetMaxGrade(); }
+
+    GetRankPercentile() { return this.#assessment.ComputeRankPercentileOfStudent(this.#id); }
 }
 
 // class used to query different parts of the database

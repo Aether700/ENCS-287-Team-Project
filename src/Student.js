@@ -10,6 +10,7 @@ function QuestionToHTMLStrStudent(assessment, index)
 function AssessmentToHTMLStrStudent(assessment)
 {
     var htmlStr = "<p>" + assessment.GetName() + "</p>";
+    htmlStr = "<p>Rank percentile: " + assessment.GetRankPercentile() + "</p>";
     htmlStr += "<p>Weight: " + assessment.GetWeight() + "%  Mark: " + assessment.GetGrade() + "/" + assessment.GetMaxGrade() + "</p><ul>";
     for (let i = 0; i < assessment.GetNumQuestions(); i++)
     {
