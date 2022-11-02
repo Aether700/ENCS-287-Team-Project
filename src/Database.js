@@ -495,6 +495,7 @@ class UserAssessment
     GetQuestionGrade(questionIndex) { return this.#results.GetGrades()[questionIndex]; }
     
     GetGrade() { return this.#results.GetAssessmentGrade(); }
+    GetWeightedGrade() { return this.GetGrade() * this.GetWeight() / this.GetMaxGrade(); }
     GetAverage() { return this.#assessment.GetAverage(); }
 
     GetQuestionMaxGrade(questionIndex) 
@@ -543,6 +544,16 @@ class User
         });
 
         return assessments;
+    }
+
+    // if the user is invalid or is not a student, will return undefined
+    GetFinalGrade()
+    {
+        if (this.IsValid() || this.GetType() !== AccountType.Student)
+        {
+            return undefined;
+        }
+        return 0;
     }
 
     // returns undefined if the id is invalid or if the user is not a teacher
