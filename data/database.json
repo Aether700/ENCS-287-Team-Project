@@ -1,6 +1,6 @@
 [
     { 
-        "name":"quizzes", 
+        "name":"Quizzes", 
         "weight":50, 
         "questions": 
         [
@@ -9,12 +9,12 @@
             {"maxGrade":25}],
             "marks":
             [
-                {"id":645258,"grade":{"grades":[0,0,0]}},
+                {"id":645258,"grade":{"grades":[0,3,0]}},
                 {"id":432483,"grade":{"grades":[4,8,24]}}
             ]
     },
     { 
-        "name":"reflection essay", 
+        "name":"Reflection essay", 
         "weight":30, 
         "questions": 
         [

@@ -9,14 +9,15 @@ function QuestionToHTMLStrStudent(assessment, index)
 
 function AssessmentToHTMLStrStudent(assessment)
 {
-    var htmlStr = "<p>" + assessment.GetName() + "</p>";
-    htmlStr = "<p>Rank percentile: " + assessment.GetRankPercentile() + "</p>";
-    htmlStr += "<p>Weight: " + assessment.GetWeight() + "%  Mark: " + assessment.GetGrade() + "/" + assessment.GetMaxGrade() + "</p><ul>";
+    var htmlStr = "<p>" + assessment.GetName() + "</p>"; 
+    htmlStr += "<p>Mark:&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;" + assessment.GetGrade() + "/" + assessment.GetMaxGrade() + "</p>";
+    htmlStr +=  "<p>Weight: &emsp;&emsp;&emsp;&emsp;&emsp;" + ((assessment.GetWeightedGrade()*100)/100).toFixed(2) + "/" + assessment.GetWeight() + "</p>";
     for (let i = 0; i < assessment.GetNumQuestions(); i++)
     {
-        htmlStr += "<li>" + QuestionToHTMLStrStudent(assessment, i) + "</li>";
+        htmlStr += "&emsp;Question " + (i+1) + "&emsp;&emsp;&emsp;" + QuestionToHTMLStrStudent(assessment, i) + "<br>";
     }
-    htmlStr += "</ul>";
+    //insert stats here
+
     return htmlStr;
 }
 
@@ -28,16 +29,17 @@ function GenerateStudentPageHead()
 function GenerateStudentBody(user)
 {
     let body = "<body>";
-    //temp////
-    body += "<input type = \"button\" onclick = \"window.location.href=\'"
-        + "/student/test/" + user.GetID() +  "\'\" value = \"Go to Test Page\">";
-    //////////
+
     let assessments = user.GetAssessmentsStudent();
     assessments.forEach(function (assessment)
     {
         body += AssessmentToHTMLStrStudent(assessment);
     });
+    
+    body += "<p>Total: &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;" + user.GetFinalGrade() + "/100</p>";
+
     body += "</body>";
+
     return body;
 }
 
@@ -50,7 +52,6 @@ function LoadStudentHomePage(user)
     studentPage += util.GenerateHTMLFooter();
     return studentPage;
 }
-
 
 module.exports = { LoadStudentHomePage };
 
