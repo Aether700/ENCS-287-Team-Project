@@ -10,14 +10,12 @@ function QuestionToHTMLStrStudent(assessment, index)
 function AssessmentToHTMLStrStudent(assessment)
 {
     var htmlStr = "<p>" + assessment.GetName() + "</p>"; 
-
     htmlStr += "<p>Mark:&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;" + assessment.GetGrade() + "/" + assessment.GetMaxGrade() + "</p>";
+    htmlStr +=  "<p>Weight: &emsp;&emsp;&emsp;&emsp;&emsp;" + ((assessment.GetWeightedGrade()*100)/100).toFixed(2) + "/" + assessment.GetWeight() + "</p>";
     for (let i = 0; i < assessment.GetNumQuestions(); i++)
     {
         htmlStr += "&emsp;Question " + (i+1) + "&emsp;&emsp;&emsp;" + QuestionToHTMLStrStudent(assessment, i) + "<br>";
     }
-    htmlStr +=  "<p>Weight: &emsp;&emsp;&emsp;&emsp;&emsp;" + ((assessment.GetWeightedGrade()*100)/100).toFixed(2) + "/" + assessment.GetWeight() + "</p><br>";
-
     //insert stats here
 
     return htmlStr;
@@ -31,10 +29,6 @@ function GenerateStudentPageHead()
 function GenerateStudentBody(user)
 {
     let body = "<body>";
-    //temp////
-    body += "<input type = \"button\" onclick = \"window.location.href=\'"
-        + "/student/test/" + user.GetID() +  "\'\" value = \"Go back to main page\">";
-    //////////
 
     let assessments = user.GetAssessmentsStudent();
     assessments.forEach(function (assessment)
