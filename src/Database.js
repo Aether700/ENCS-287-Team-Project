@@ -564,7 +564,19 @@ class User
         {
             return undefined;
         }
-        return 0;
+
+        let numerator = 0;
+        let denumerator = 0;
+        let assessments = this.GetAssessmentsStudent();
+        assessments.forEach(function(assessment)
+        {
+            let weight = assessment.GetWeight() / 100;
+            // weight is percentage between 0 and 100 not between 0 and 1
+            numerator += assessment.GetGrade() * weight;
+            denumerator += weight;
+        });
+
+        return numerator / denumerator;
     }
 
     // returns undefined if the id is invalid or if the user is not a teacher
