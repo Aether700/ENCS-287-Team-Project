@@ -482,6 +482,25 @@ class Database
         this.#letterGrades.set(id, letterGrade);
     }
 
+    // returns a map with the letter grade as key and the number of students as elements
+    GetLetterGradeDistribution()
+    {
+        let distribution = new Map();
+        this.#letterGrades.forEach(function(letterGrade, id)
+        {
+            if (distribution.has(letterGrade))
+            {
+                distribution[letterGrade] = distribution[letterGrade] + 1;
+            }
+            else
+            {
+                distribution.set(letterGrade, 1);
+            }
+        });
+
+        return distribution;
+    }
+
     LoadFromFile()
     {
         console.log("Loading Database From File");
@@ -650,6 +669,16 @@ class User
         return assessments;
     }
 
+    GetLetterGradeDistribution()
+    {
+        if (!this.IsValid())
+        {
+            return undefined;
+        }
+
+        return this.#database.GetLetterGradeDistribution();
+    }
+
     // if the user is invalid or is not a student, will return undefined
     GetFinalGrade()
     {
@@ -736,14 +765,14 @@ function InitializeDatabase()
         //temporary initialization
         
         var arr = [new Question(6), new Question(10), new Question(25)];
-        database.AddAssessment(new Assessment("quizzes", 50, arr));
+        database.AddAssessment(new Assessment("Quizzes", 50, arr));
         
         arr = [new Question(5), new Question(8), new Question(10), new Question(7)];
-        database.AddAssessment(new Assessment("reflection essay", 30, arr));
+        database.AddAssessment(new Assessment("Reflection Essay", 30, arr));
 
         accounts.forEach(function(account)
         {
-            database.SetLetterGrade(account.GetID(), "F");
+            database.SetLetterGrade(account.GetID(), "Not Submitted Yet");
         });
         //////////////////////////////////////
         database.SaveToFile();
