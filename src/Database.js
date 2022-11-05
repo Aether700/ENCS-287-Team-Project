@@ -231,6 +231,48 @@ class Assessment
         return sum / this.#marks.size;
     }
 
+    GetMedian()
+    {
+        let orderedArr = new Array();
+        this.#marks.forEach(function(result, id)
+        {
+            // add grade to ordered list
+            orderedArr.push(result.GetAssessmentGrade());
+        });
+
+        orderedArr.sort(function(a, b) { return  a - b; });
+        
+        if (orderedArr.length % 2 == 0)
+        {
+            
+            let lowestIndex = Math.floor((orderedArr.length - 1) / 2);
+            let highestIndex = lowestIndex + 1;
+
+            let lowestResult = orderedArr.at(lowestIndex);
+            let highestResult = orderedArr.at(highestIndex);
+
+            return (lowestResult + highestResult) / 2;
+        }
+        else
+        {
+            return orderedArr.at((orderedArr.length - 1) / 2);
+        }
+    }
+
+    GetStandardDeviation()
+    {
+        let mean = this.GetAverage();
+        let sum = 0;
+        let numDataPoints = this.#marks.size;
+
+        this.#marks.forEach(function(results, id)
+        {
+            sum += Math.pow(results.GetAssessmentGrade() - mean, 2);
+        });
+
+        return Math.sqrt(sum / numDataPoints);
+    }
+
     GetMaxGrade()
     {
         let sum = 0;
@@ -387,10 +429,12 @@ function SaveAccounts()
 class Database
 {
     #assessments;
+    #letterGrades; // key: student id, value: letter grade as string
 
     constructor()
     {
         this.#assessments = new Array();
+        this.#letterGrades = new Map();
     }
 
     AddAssessment(assessment)
@@ -420,6 +464,24 @@ class Database
         return account.GetUserType();
     }
 
+    GetLetterGrade(id)
+    {
+        if (!IsGUIDValid(id) || this.GetUserType(id) != AccountType.Student || !this.#letterGrades.has(id))
+        {
+            return undefined;
+        }
+        return this.#letterGrades.get(id);
+    }
+
+    SetLetterGrade(id, letterGrade)
+    {
+        if (!IsGUIDValid(id) || this.GetUserType(id) != AccountType.Student)
+        {
+            return undefined;
+        }
+        this.#letterGrades.set(id, letterGrade);
+    }
+
     LoadFromFile()
     {
         console.log("Loading Database From File");
@@ -428,7 +490,10 @@ class Database
         LoadGUIDs();
 
         // contains generic objects not Assessments
-        let tempArr = JSON.parse(util.ReadFile(databaseFilepath));
+        let databaseTempObject = JSON.parse(util.ReadFile(databaseFilepath));
+        
+        // load assessments
+        let tempArr = databaseTempObject.assessments;
         
         let newArr = new Array();
         
@@ -453,6 +518,17 @@ class Database
         });
 
         this.#assessments = Array.from(newArr);
+
+        // load student letter grades
+
+        this.#letterGrades.clear();
+        let letterGradeArr = databaseTempObject.letterGrades;
+        for (let i = 0; i < letterGradeArr.length; i++)
+        {
+            let currLetterGradeObj = letterGradeArr.at(i);
+            this.#letterGrades.set(currLetterGradeObj.id, currLetterGradeObj.letterGrade);
+        }
+
     }
 
     SaveToFile()
@@ -467,7 +543,7 @@ class Database
         SaveAccounts();
         SaveGUIDs();
         
-        let data = "[";
+        let data = "{\"assessments\":[";
         this.#assessments.forEach(function(assessment)
         {
             data += assessment.ToJSONStr() + ",";
@@ -478,7 +554,19 @@ class Database
             data = data.slice(0, data.length - 1);
         }
         
-        data += "]";
+        data += "],\"letterGrades\":[";
+
+        this.#letterGrades.forEach(function(letterGrade, id)
+        {
+            data += "{\"id\":" + id + ",\"letterGrade\":\"" + letterGrade + "\"},"; 
+        });
+
+        if (this.#letterGrades.size > 0)
+        {
+            data = data.slice(0, data.length - 1);
+        }
+
+        data +="]}";
         
         util.WriteToFile(databaseFilepath, data);
     }
@@ -508,6 +596,8 @@ class UserAssessment
     GetGrade() { return this.#results.GetAssessmentGrade(); }
     GetWeightedGrade() { return this.GetGrade() * this.GetWeight() / this.GetMaxGrade(); }
     GetAverage() { return this.#assessment.GetAverage(); }
+    GetMedian() { return this.#assessment.GetMedian(); }
+    GetStandardDeviation() { return this.#assessment.GetStandardDeviation(); }
 
     GetQuestionMaxGrade(questionIndex) 
     { 
@@ -537,6 +627,9 @@ class User
 
     // returns undefined if this User object is invalid
     GetType() { return this.#database.GetUserType(this.#id); }
+
+    // returns undefined if this User object is invalid or if the user is not a student
+    GetLetterGrade() { return this.#database.GetLetterGrade(this.#id); }
 
     // returns undefined if the id is invalid or if the user is not a student
     // returns an array of UserAssessments for this specific student
@@ -647,6 +740,11 @@ function InitializeDatabase()
         
         arr = [new Question(5), new Question(8), new Question(10), new Question(7)];
         database.AddAssessment(new Assessment("reflection essay", 30, arr));
+
+        accounts.forEach(function(account)
+        {
+            database.SetLetterGrade(account.GetID(), "F");
+        });
         //////////////////////////////////////
         database.SaveToFile();
     }
