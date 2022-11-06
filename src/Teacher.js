@@ -9,8 +9,8 @@ function QuestionToHTMLStrTeacher(assessment, question, index)
 function AssessmentToHTMLStrTeacher(assessment)
 {
     let htmlStr = "<p>" + assessment.GetName() + "</p>";
-    htmlStr += "<p>Weight: " + assessment.GetWeight() + " Class Average: " 
-        + assessment.GetAverage() + "</p>";
+    htmlStr += "<table><tr><th>Weight</th><th>Class Average</th></tr>" + "<tr><td>" + assessment.GetWeight() + "</td>" 
+        + "<td>" + assessment.GetAverage() + "</td></tr>";
 
     htmlStr += "<p>Distribution</p><ul>";
     let distribution = assessment.GetDistribution();
@@ -39,7 +39,7 @@ function AssessmentToHTMLStrTeacher(assessment)
 
 function GenerateTeacherPageHead()
 {
-    return "<head></head>";
+    return "<head> </head>";
 }
 
 function GenerateTeacherBody(user)
