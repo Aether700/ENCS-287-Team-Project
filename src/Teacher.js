@@ -13,15 +13,8 @@ function AssessmentToHTMLStrTeacherGrade()
     <div><h3>Add assessment for a student</h3></div>
     <div class="mainBox">
         <div class="text02Box"> 
-            <form action="#">
-                <label for="lang">Assessment:</label>
-                <select name="languages" id="lang">
-                    <option value="Quiz">Quiz</option>
-                    <option value="Reflection Essay">Reflection Essay</option>
-                    <option value="Midterm Exam">Midterm Exam</option>
-                    <option value="Final Exam">Final Exam</option>
-                </select>
-            </form>
+            <span class="datum">Assessment Name:</span>
+            <input id = "in3" type="text"/>
     <br>
             <span class="datum" >Weight:</span>
             <input id="in2" type="text"/><span> % </span>
