@@ -14,7 +14,7 @@ function AssessmentToHTMLStrTeacherGrade()
     <div class="mainBox">
         <div class="text02Box"> 
             <form action="#">
-                <label for="lang">Question type:</label>
+                <label for="lang">Assessment:</label>
                 <select name="languages" id="lang">
                     <option value="Quiz">Quiz</option>
                     <option value="Reflection Essay">Reflection Essay</option>
@@ -109,6 +109,7 @@ function LoadTeacherHomePage(user)
     console.log("loading /teacher/home/" + user.GetID());
     let teacherPage = util.GenerateHTMLHeader();
     teacherPage += GenerateTeacherPageHead();
+    teacherPage += AssessmentToHTMLStrTeacherGrade();
     teacherPage += GenerateTeacherBody(user);
     teacherPage += util.GenerateHTMLFooter();
     return teacherPage; 
