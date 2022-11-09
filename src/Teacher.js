@@ -56,17 +56,18 @@ function GenerateOverview(assessments)
     {
         htmlStr += GenerateOverviewRow(assessment);
     });
+    htmlStr += "</table>";
     return htmlStr;
 }
 
 function GenerateTeacherBody(user)
 {
     let body = "<body>";
-    let assessments = user.GetAssessmentsTeacher();
-    
     body += GenerateHeader();
+    
     //overview
-    //body += GenerateOverview(assessments);
+    let assessments = user.GetAssessmentsTeacher();
+    body += GenerateOverview(assessments);
 
     // specifics
     assessments.forEach(function (assessment)
@@ -86,12 +87,19 @@ function GenerateStyle()
 
 function GenerateHeader()
 {
-    return "<h1 style=\"position: relative; padding: 0.1%; bottom: 82%; top: 0%; left: 0%; right: 0%; text-align: center; background: #912338; color: white;\">Concordia University</h1>"
-    //<p style = \"position: fixed; padding: 0.1%; bottom: 82%; top: 0%; left: 0%; right: 0%; text-align: center; background: #912338; color: white;\">Marks and Grades assessment for SOEN 287 for Fall 2022</p>"
+    return "<h1 style=\"position: relative; " +
+        "padding: 0.1%; bottom: 82%; top: 0%; left: 0%; right: 0%; " +
+        "text-align: center; background: #912338; color: white;\">Concordia University</h1>";
+        //<p style = \"position: fixed; padding: 0.1%; bottom: 82%; top: 0%; left: 0%; right: 0%; 
+        //text-align: center; background: #912338; color: white;\">Marks and Grades assessment for 
+        //SOEN 287 for Fall 2022</p>"
 }
 function GenerateFooter()
 {
-    return "<h6 style=\"position: relative; padding: 1%; bottom: 0%; top: 92%; left: 0%; right: 0%; text-align: center; background: #912338; color: white;\">Website made by Hao Mei, Jamil Hanachian, James Teasdale, Alex Ye, Catherine Pham & Nikita Ciobanu</h6>"
+    return "<h6 style=\"position: relative; padding: 1%; bottom: 0%; top: 92%; left: 0%; " + 
+        "right: 0%; text-align: center; background: #912338; color: white;\"> " + 
+        "Website made by Hao Mei, Jamil Hanachian, James Teasdale, Alex Ye, Catherine Pham " + 
+        "& Nikita Ciobanu</h6>";
 }
 
 function LoadTeacherHomePage(user)
