@@ -101,7 +101,7 @@ function LoadTeacherHomePage(user)
     teacherPage += GenerateTeacherPageHead();
     teacherPage += GenerateStyle();
     teacherPage += GenerateTeacherBody(user);
-    //teacherPage += util.GenerateHTMLFooter();
+    teacherPage += util.GenerateHTMLFooter();
     return teacherPage; 
 }
 
