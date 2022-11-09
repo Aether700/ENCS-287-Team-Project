@@ -3,37 +3,37 @@ const database = require("../src/Database.js");
 
 function QuestionToHTMLStrTeacher(assessment, question, index)
 {
-    return "On " + question.GetMaxGrade() + "\tAverage: " + assessment.GetQuestionAverage(index);
+    return "Max grade for the question: " + question.GetMaxGrade() + "\t | Average: " + assessment.GetQuestionAverage(index);
 }
 
 function AssessmentToHTMLStrTeacher(assessment)
 {
-    let htmlStr = "<p>" + assessment.GetName() + "</p>";
+    let htmlStr = "<p><b><u>" + assessment.GetName() + "</u></p>";
     
     /*
     htmlStr += "<table><tr><th>Weight</th><th>Class Average</th></tr>" + "<tr><td>" + assessment.GetWeight() + "</td>" 
         + "<td>" + assessment.GetAverage() + "</td></tr>";
     */
 
-    htmlStr += "<p>Distribution</p>";
+    htmlStr += "<p><b>Distribution</p>";
     let distribution = assessment.GetDistribution();
     distribution.forEach(function(numStudents, grade)
     {
         htmlStr += "<table><tr><td><b>Grade: </b>" + grade + "</td>" + "<tr><td>Number of Students: " + numStudents + "</td></tr></table>";
     });
 
-    htmlStr += "<p>Marks</p>";
+    htmlStr += "<p><b>Marks of each student (ID)</p>";
     let totals = assessment.GetTotals();
     totals.forEach(function (total, id)
     {
         htmlStr += "<table><tr><th>ID: " + id + "</th>" + "<tr><th> Total: " + total + "</th></tr></table>";
     });
-    htmlStr += "<p>Questions</p>";
+    htmlStr += "<p><b>Questions</p>";
 
     let questions = assessment.GetQuestions();
     for (let i = 0; i < questions.length; i++)
     {
-        htmlStr += "<li>" + QuestionToHTMLStrTeacher(assessment, questions[i], i) + "</li>";
+        htmlStr += "<table><tr><td>" + QuestionToHTMLStrTeacher(assessment, questions[i], i) + "</td></tr></table>";
     }
     return htmlStr;
 }
@@ -51,7 +51,7 @@ function GenerateOverviewRow(assessment)
 
 function GenerateOverview(assessments)
 {
-    let htmlStr = "<table><caption>Overview</caption><tr><th></th><th>Weight</th><th>Average</th></tr>";
+    let htmlStr = "<table><caption><b>Overview</caption><tr><th></th><th>Weight</th><th>Average</th></tr>";
     assessments.forEach(function (assessment)
     {
         htmlStr += GenerateOverviewRow(assessment);
@@ -64,15 +64,17 @@ function GenerateTeacherBody(user)
     let body = "<body>";
     let assessments = user.GetAssessmentsTeacher();
     
-    body+=GenerateHeader();
-    // overview
-    body += GenerateOverview(assessments);
+    body += GenerateHeader();
+    //overview
+    //body += GenerateOverview(assessments);
 
     // specifics
     assessments.forEach(function (assessment)
     {
         body += AssessmentToHTMLStrTeacher(assessment);
     });
+
+    body += GenerateFooter();
     body += "</body>";
     return body;
 }
@@ -99,7 +101,6 @@ function LoadTeacherHomePage(user)
     teacherPage += GenerateTeacherPageHead();
     teacherPage += GenerateStyle();
     teacherPage += GenerateTeacherBody(user);
-    teacherPage += GenerateFooter();
     //teacherPage += util.GenerateHTMLFooter();
     return teacherPage; 
 }
