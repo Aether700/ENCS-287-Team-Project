@@ -45,6 +45,17 @@ function GenerateTeacherPageHead()
 function GenerateTeacherBody(user)
 {
     let body = "<body>";
+
+    body += "<p>Letter Grade Distribution: </p><ul>";
+    
+    let letterGradeDistribution = user.GetLetterGradeDistribution();
+    letterGradeDistribution.forEach(function (numStudents, grade)
+    {
+        body += "<li> Letter Grade: " + grade + " Number of Students: " + numStudents + "</li>";
+    });
+
+    body += "</ul>";
+
     let assessments = user.GetAssessmentsTeacher();
     assessments.forEach(function (assessment)
     {
