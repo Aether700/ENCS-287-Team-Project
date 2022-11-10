@@ -17,7 +17,7 @@ function AssessmentToHTMLStrTeacherGrade()
             <input id = "in3" type="text"/>
     <br>
             <span class="datum" >Weight:&emsp;&emsp;&emsp;&emsp;&emsp;&nbsp;&nbsp;</span>
-            <input id="in2" type="text"/><span> % </span>
+            <input id="in2" type="number"/><span> % </span>
     <br>
     <br>
             <span class="datum">Number of questions:</span>
