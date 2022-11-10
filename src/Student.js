@@ -35,17 +35,14 @@ function GenerateStudentBody(user)
 {
     let body = "<body>";
 
-    // temporary for testing/debugging
-    body += "<p>" + user.GetLetterGrade() + "</p>";
-    ///////////////////////////////////
-
     let assessments = user.GetAssessmentsStudent();
     assessments.forEach(function (assessment)
     {
         body += AssessmentToHTMLStrStudent(assessment);
     });
     
-    body += "<p>Total: &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;" + user.GetFinalGrade().toFixed(2) + "/100</p>";
+    body += "<p>Total: &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;" + user.GetFinalGrade() + "/100</p>";
+    body += "<p>Letter Grade:&emsp;&emsp;&emsp;" + user.GetLetterGrade() + "</p>"; 
 
     body += "</body>";
 
