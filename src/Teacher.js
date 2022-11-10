@@ -13,10 +13,10 @@ function AssessmentToHTMLStrTeacherGrade()
     <div><h3>Add assessment for a student</h3></div>
     <div class="mainBox">
         <div class="text02Box"> 
-            <span class="datum">Assessment Name:</span>
+            <span class="datum">Assessment Name:&emsp;</span>
             <input id = "in3" type="text"/>
     <br>
-            <span class="datum" >Weight:</span>
+            <span class="datum" >Weight:&emsp;&emsp;&emsp;&emsp;&emsp;&nbsp;&nbsp;</span>
             <input id="in2" type="text"/><span> % </span>
     <br>
     <br>
@@ -25,6 +25,7 @@ function AssessmentToHTMLStrTeacherGrade()
     <br>
     <br>
             <button class="dropbtn">Create Assessment</button>
+    <br>
     <br>
             <table>
                 <tr>

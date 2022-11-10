@@ -19,7 +19,7 @@ function AssessmentToHTMLStrStudent(assessment)
     //insert stats here
     {
         htmlStr += "<p> Rank percentile of the student: " + assessment.GetRankPercentile();
-        htmlStr += "<p> Median for all assignments: " + assessment.GetMedian();
+        htmlStr += "<p> Median for this assessment: " + assessment.GetMedian();
         htmlStr += "<p> Standard deviation: " + assessment.GetStandardDeviation();
    }//insert stats here
 
@@ -41,7 +41,7 @@ function GenerateStudentBody(user)
         body += AssessmentToHTMLStrStudent(assessment);
     });
     
-    body += "<p>Total: &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;" + user.GetFinalGrade() + "/100</p>";
+    body += "<p>Total: &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;" + user.GetFinalGrade().toFixed(2) + "/100</p>";
     body += "<p>Letter Grade:&emsp;&emsp;&emsp;" + user.GetLetterGrade() + "</p>"; 
 
     body += "</body>";
