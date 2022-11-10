@@ -17,11 +17,11 @@ function AssessmentToHTMLStrStudent(assessment)
         htmlStr += "&emsp;Question " + (i+1) + "&emsp;&emsp;&emsp;" + QuestionToHTMLStrStudent(assessment, i) + "<br>";
     }
     //insert stats here
-
-    // temporary for testing/demo purposes:
-    htmlStr += "<p>Median: " + assessment.GetMedian() + " standard deviation: " 
-        + assessment.GetStandardDeviation() + "</p>";
-    ///////////////////////////////////////////
+    {
+        htmlStr += "<p> Rank percentile of the student: " + assessment.GetRankPercentile();
+        htmlStr += "<p> Median for all assignments: " + assessment.GetMedian();
+        htmlStr += "<p> Standard deviation: " + assessment.GetStandardDeviation();
+   }//insert stats here
 
     return htmlStr;
 }
