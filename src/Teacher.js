@@ -6,6 +6,50 @@ function QuestionToHTMLStrTeacher(assessment, question, index)
     return "Max grade for the question: " + question.GetMaxGrade() + "\t | Average: " + assessment.GetQuestionAverage(index);
 }
 
+function AssessmentToHTMLStrTeacherGrade()
+{
+    return `
+    <div ><h2>SOEN 287 Section Q</h2> </div>
+    <div><h3>Add assessment for a student</h3></div>
+    <div class="mainBox">
+        <div class="text02Box"> 
+            <span class="datum">Assessment Name:</span>
+            <input id = "in3" type="text"/>
+    <br>
+            <span class="datum" >Weight:</span>
+            <input id="in2" type="text"/><span> % </span>
+    <br>
+    <br>
+            <span class="datum">Number of questions:</span>
+            <input id = "in3" type="number"/>
+    <br>
+    <br>
+            <button class="dropbtn">Create Assessment</button>
+    <br>
+            <table>
+                <tr>
+                    <th>Max Value For Each Question</th>
+                    <td> <input type="number"> </td>
+                    <td> <input type="number"> </td>
+                    <td> <input type="number"> </td>
+                </tr>
+                <tr>
+                    <td>645258</td>
+                    <td> <input type="number"> </td>
+                    <td> <input type="number"> </td>
+                    <td> <input type="number"> </td>
+                </tr>
+                <tr>
+                    <td>432483</td>
+                    <td> <input type="number"> </td>
+                    <td> <input type="number"> </td>
+                    <td> <input type="number"> </td>
+                </tr>
+            </table>
+        </div>
+    </div> `;
+}
+
 function AssessmentToHTMLStrTeacher(assessment)
 {
     let htmlStr = "<p><b><u>" + assessment.GetName() + "</u></p>";
@@ -40,7 +84,7 @@ function AssessmentToHTMLStrTeacher(assessment)
 
 function GenerateTeacherPageHead()
 {
-    return "<head></head>";
+    return "<head>" + GenerateStyle() +"</head>";
 }
 
 function GenerateOverviewRow(assessment)
@@ -64,6 +108,7 @@ function GenerateTeacherBody(user)
 {
     let body = "<body>";
     body += GenerateHeader();
+    body += AssessmentToHTMLStrTeacherGrade() + "<br/><br/>";
     let assessments = user.GetAssessmentsTeacher();
     body += GenerateOverview(assessments);
 
@@ -105,7 +150,6 @@ function LoadTeacherHomePage(user)
     console.log("loading /teacher/home/" + user.GetID());
     let teacherPage = util.GenerateHTMLHeader();
     teacherPage += GenerateTeacherPageHead();
-    teacherPage += GenerateStyle();
     teacherPage += GenerateTeacherBody(user);
     teacherPage += util.GenerateHTMLFooter();
     return teacherPage; 
