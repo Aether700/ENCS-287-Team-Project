@@ -64,8 +64,6 @@ function GenerateTeacherBody(user)
 {
     let body = "<body>";
     body += GenerateHeader();
-    
-    //overview
     let assessments = user.GetAssessmentsTeacher();
     body += GenerateOverview(assessments);
 
