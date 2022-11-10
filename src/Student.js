@@ -19,7 +19,7 @@ function AssessmentToHTMLStrStudent(assessment)
     //insert stats here
     {
         htmlStr += "<p> Rank percentile of the student: " + assessment.GetRankPercentile();
-        htmlStr += "<p> Median for all assiggnments: " + assessment.GetMedian();
+        htmlStr += "<p> Median for all assignments: " + assessment.GetMedian();
         htmlStr += "<p> Standard deviation: " + assessment.GetStandardDeviation();
    }//insert stats here
 
