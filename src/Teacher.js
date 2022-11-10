@@ -47,8 +47,9 @@ function AssessmentToHTMLStrTeacherGrade()
                 </tr>
             </table>
         </div>
-    </div> `
-    }
+    </div> `;
+}
+
 function AssessmentToHTMLStrTeacher(assessment)
 {
     let htmlStr = "<p><b><u>" + assessment.GetName() + "</u></p>";
@@ -83,7 +84,7 @@ function AssessmentToHTMLStrTeacher(assessment)
 
 function GenerateTeacherPageHead()
 {
-    return "<head></head>";
+    return "<head>" + GenerateStyle() +"</head>";
 }
 
 function GenerateOverviewRow(assessment)
@@ -107,6 +108,7 @@ function GenerateTeacherBody(user)
 {
     let body = "<body>";
     body += GenerateHeader();
+    body += AssessmentToHTMLStrTeacherGrade() + "<br/><br/>";
     let assessments = user.GetAssessmentsTeacher();
     body += GenerateOverview(assessments);
 
@@ -148,8 +150,6 @@ function LoadTeacherHomePage(user)
     console.log("loading /teacher/home/" + user.GetID());
     let teacherPage = util.GenerateHTMLHeader();
     teacherPage += GenerateTeacherPageHead();
-    teacherPage += AssessmentToHTMLStrTeacherGrade();
-    teacherPage += GenerateStyle();
     teacherPage += GenerateTeacherBody(user);
     teacherPage += util.GenerateHTMLFooter();
     return teacherPage; 
