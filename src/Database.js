@@ -504,9 +504,6 @@ class Database
     LoadFromFile()
     {
         console.log("Loading Database From File");
-        
-        //LoadAccounts();
-        //LoadGUIDs();
 
         // contains generic objects not Assessments
         let databaseTempObject = JSON.parse(util.ReadFile(databaseFilepath));
@@ -721,8 +718,11 @@ function InitializeDefaultStaticAccounts()
     AccountType.Student, GenerateGUID()));
     accounts.push(new Account("student2", HashPassword("student2"), 
     AccountType.Student, GenerateGUID()));
-    
-    SaveGUIDs();
+
+    if (fs.existsSync(databaseFilepath))
+    {
+        SaveGUIDs();
+    }
 }
 
 function InitializeAccounts()
@@ -731,6 +731,14 @@ function InitializeAccounts()
     if (fs.existsSync(accountsFilepath))
     {
         LoadAccounts();
+        if (!fs.existsSync(guidFilepath))
+        {
+            accounts.forEach(function (account)
+            {
+                guidUsed.set(account.GetID(), account.GetID());
+            });
+            SaveGUIDs();
+        }
     }
     else
     {
@@ -742,7 +750,11 @@ function InitializeAccounts()
         }
         
         InitializeDefaultStaticAccounts();
-        SaveAccounts();
+
+        if (fs.existsSync(databaseFilepath))
+        {
+            SaveAccounts();
+        }
     }
 }
 
