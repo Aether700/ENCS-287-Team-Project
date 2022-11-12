@@ -146,7 +146,7 @@ class AssessmentResult
         this.#grades = Array.from(grades);
     }
 
-    GetAssessmentGrade()
+    GetGrade()
     {
         let sum = 0;
         this.#grades.forEach(function(mark)
@@ -156,7 +156,7 @@ class AssessmentResult
         return sum;
     }
 
-    GetGrades() { return this.#grades; }
+    GetQuestionGrades() { return this.#grades; }
 
     static DefaultResult(numQuestions)
     {
@@ -216,7 +216,7 @@ class Assessment
         let totals = new Map();
         this.#marks.forEach(function(result, id)
         {
-            totals.set(id, result.GetAssessmentGrade());
+            totals.set(id, result.GetGrade());
         });
         return totals;
     }
@@ -226,7 +226,7 @@ class Assessment
         let sum = 0;
         this.#marks.forEach(function(result)
         {
-            sum += result.GetAssessmentGrade();
+            sum += result.GetGrade();
         });
         return sum / this.#marks.size;
     }
@@ -237,7 +237,7 @@ class Assessment
         this.#marks.forEach(function(result, id)
         {
             // add grade to ordered list
-            orderedArr.push(result.GetAssessmentGrade());
+            orderedArr.push(result.GetGrade());
         });
 
         orderedArr.sort(function(a, b) { return  a - b; });
@@ -267,7 +267,7 @@ class Assessment
 
         this.#marks.forEach(function(results, id)
         {
-            sum += Math.pow(results.GetAssessmentGrade() - mean, 2);
+            sum += Math.pow(results.GetGrade() - mean, 2);
         });
 
         return Math.sqrt(sum / numDataPoints);
@@ -288,7 +288,7 @@ class Assessment
         let sum = 0;
         this.#marks.forEach(function(results)
         {
-            sum += results.GetGrades()[questionIndex];
+            sum += results.GetQuestionGrades()[questionIndex];
         });
         return sum / this.#marks.size;
     }
@@ -299,7 +299,7 @@ class Assessment
         let distribution = new Map();
         this.#marks.forEach(function (mark, id)
         {
-            let grade = mark.GetAssessmentGrade();
+            let grade = mark.GetGrade();
             if (distribution.has(grade))
             {
                 distribution[grade] = distribution[grade] + 1;
@@ -313,7 +313,7 @@ class Assessment
     }
 
     // returns undefined if the id provided is invalid
-    GetMarks(id)
+    GetGrades(id)
     {
         if (!IsGUIDValid(id))
         {
@@ -323,7 +323,7 @@ class Assessment
         return this.#marks.get(id);
     }
 
-    SetMarks(id, marks)
+    SetGrades(id, marks)
     {
         if (IsGUIDValid(id))
         {
@@ -339,7 +339,7 @@ class Assessment
         }
 
         let distribution = this.GetDistribution();
-        let studentGrade = this.#marks.get(studentID).GetAssessmentGrade();
+        let studentGrade = this.#marks.get(studentID).GetGrade();
 
         let cummulative = 0;
         let frequencyOfStudentGrade = 0;
@@ -504,9 +504,6 @@ class Database
     LoadFromFile()
     {
         console.log("Loading Database From File");
-        
-        LoadAccounts();
-        LoadGUIDs();
 
         // contains generic objects not Assessments
         let databaseTempObject = JSON.parse(util.ReadFile(databaseFilepath));
@@ -530,7 +527,7 @@ class Database
             let marks = Array.from(obj.marks);
             marks.forEach(function(mark)
             {
-                assessmentRead.SetMarks(mark.id, new AssessmentResult(mark.grade.grades));
+                assessmentRead.SetGrades(mark.id, new AssessmentResult(mark.grade.grades));
             });
 
             newArr.push(assessmentRead);
@@ -603,16 +600,16 @@ class UserAssessment
     constructor(assessment, id)
     {
         this.#assessment = assessment;
-        this.#results = assessment.GetMarks(id);
+        this.#results = assessment.GetGrades(id);
         this.#id = id;
     }
 
     GetName() { return this.#assessment.GetName(); }
     GetWeight()  { return this.#assessment.GetWeight(); }
     GetNumQuestions() { return this.#assessment.GetQuestions().length; }
-    GetQuestionGrade(questionIndex) { return this.#results.GetGrades()[questionIndex]; }
+    GetQuestionGrade(questionIndex) { return this.#results.GetQuestionGrades()[questionIndex]; }
     
-    GetGrade() { return this.#results.GetAssessmentGrade(); }
+    GetGrade() { return this.#results.GetGrade(); }
     GetWeightedGrade() { return this.GetGrade() * this.GetWeight() / this.GetMaxGrade(); }
     GetAverage() { return this.#assessment.GetAverage(); }
     GetMedian() { return this.#assessment.GetMedian(); }
@@ -721,8 +718,11 @@ function InitializeDefaultStaticAccounts()
     AccountType.Student, GenerateGUID()));
     accounts.push(new Account("student2", HashPassword("student2"), 
     AccountType.Student, GenerateGUID()));
-    
-    SaveGUIDs();
+
+    if (fs.existsSync(databaseFilepath))
+    {
+        SaveGUIDs();
+    }
 }
 
 function InitializeAccounts()
@@ -731,6 +731,14 @@ function InitializeAccounts()
     if (fs.existsSync(accountsFilepath))
     {
         LoadAccounts();
+        if (!fs.existsSync(guidFilepath))
+        {
+            accounts.forEach(function (account)
+            {
+                guidUsed.set(account.GetID(), account.GetID());
+            });
+            SaveGUIDs();
+        }
     }
     else
     {
@@ -742,7 +750,11 @@ function InitializeAccounts()
         }
         
         InitializeDefaultStaticAccounts();
-        SaveAccounts();
+
+        if (fs.existsSync(databaseFilepath))
+        {
+            SaveAccounts();
+        }
     }
 }
 
