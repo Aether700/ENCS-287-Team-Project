@@ -12,27 +12,33 @@ function AssessmentToHTMLStrTeacherGrade()
     <div ><h2>SOEN 287 Section Q</h2> </div>
     <div><h3>Add assessment for a student</h3></div>
     <div class="mainBox">
-        <div class="text02Box"> 
-            <span class="datum">Assessment Name:&emsp;</span>
-            <input id = "in3" type="text"/>
-    <br>
-            <span class="datum" >Weight:&emsp;&emsp;&emsp;&emsp;&emsp;&nbsp;&nbsp;</span>
-            <input id="in2" type="number"/><span> % </span>
-    <br>
-    <br>
-            <span class="datum">Number of questions:</span>
-            <input id = "in3" type="number"/>
-    <br>
-    <br>
-            <button class="dropbtn">Create Assessment</button>
-    <br>
-    <br>
-            <table>
-                <tr>
-                    <th>Max Value For Each Question</th>
-                    <td> <input type="number"> </td>
-                    <td> <input type="number"> </td>
-                    <td> <input type="number"> </td>
+        <form method = \"post\">
+            <div class="text02Box"> 
+                <span class="datum">Assessment Name:&emsp;</span>
+                <input id = "in3" type="text"/>
+                <br>
+                <span class="datum" >Weight:&emsp;&emsp;&emsp;&emsp;&emsp;&nbsp;&nbsp;</span>
+                <input id="in2" type="number"/><span> % </span>
+                <br>
+                <br>
+                <span class="datum">Number of questions:</span>
+                <input id = "numQuestions" type="number"/>
+                <br>
+                <br>
+                <button class="dropbtn" onclick = \"GenerateTable();\">Create Assessment</button>
+            </div>
+
+            <div id = \"questionTable\">
+            </div>
+        </form>
+        <br>
+        <br>
+        <table>
+            <tr>
+                <th>Max Value For Each Question</th>
+                <td> <input type="number"> </td>
+                <td> <input type="number"> </td>
+                <td> <input type="number"> </td>
                 </tr>
                 <tr>
                     <td>645258</td>
@@ -47,7 +53,6 @@ function AssessmentToHTMLStrTeacherGrade()
                     <td> <input type="number"> </td>
                 </tr>
             </table>
-        </div>
     </div> `;
 }
 
@@ -120,6 +125,7 @@ function GenerateTeacherBody(user)
     });
 
     body += GenerateFooter();
+    body += "<script src = \"/teacher/TeacherClientSide.js\"></script>";
     body += "</body>";
     return body;
 }
@@ -156,4 +162,25 @@ function LoadTeacherHomePage(user)
     return teacherPage; 
 }
 
-module.exports = { LoadTeacherHomePage };
+function GenerateFunctionGenerateTable()
+{
+    return "function GenerateTable()\n"
+        + "{\n" 
+        +     "\tlet numQuestions = document.getElementById(\"numQuestions\").value;\n"
+        +     "\tconsole.log(\"Generating table with \" + numQuestions + \" questions\");\n"
+        +     "\tlet tableDiv = document.getElementById(\"questionTable\");\n"
+        +     "\ttableDiv.innerHTML = \"<p>Table goes here</p>\";\n" 
+        +     "\ttableDiv.innerHTML += \"<p>Table goes here again</p>\";\n"    
+        + "}";
+}
+
+function LoadTeacherClientSideJs(studentIDs)
+{
+    console.log("loading /teacher/TeacherClientSide.js");
+    let srcCode = "const studentIDs = [" + studentIDs.join() + "];\n";
+    srcCode += "console.log(studentIDs);";
+    srcCode += GenerateFunctionGenerateTable();
+    return srcCode;
+}
+
+module.exports = { LoadTeacherHomePage, LoadTeacherClientSideJs };
