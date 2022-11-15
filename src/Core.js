@@ -50,7 +50,7 @@ function GeneratePage(request, response, user, url)
             default:
                 response.statusCode = 404;
                 response.setHeader('Content-Type', 'text/plain');
-                response.end("Unknown Webpage: " + request.url);
+                response.end("Unknown resource: " + request.url);
                 break;
         }
     }
@@ -169,7 +169,26 @@ function HandlePostRequest(request, response)
     request.on("end", function()
     {
         let form = querystring.parse(rawData);
-        HandleLoginRequest(request, response, form);
+
+        switch (form.formType)
+        {
+            case "login":
+                HandleLoginRequest(request, response, form);
+                break;
+
+            default:
+                response.statusCode = 404;
+                response.setHeader('Content-Type', 'text/plain');
+                if (form.formType == undefined)
+                {
+                    response.end("No form type provided");
+                }
+                else
+                {
+                    response.end("Unknown form: " + form.formType);
+                }
+                break;
+        }
     });
 }
 
