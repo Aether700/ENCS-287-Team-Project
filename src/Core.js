@@ -159,6 +159,15 @@ function HandleLoginRequest(request, response, form)
     }
 }
 
+function HandleCreateAccountForm(request, response, form)
+{
+    console.log(form.username + ": " + form.password + ": " + form.passwordReEntered + ": " + form.userType);
+    // temp
+    response.statusCode = 200;
+    response.setHeader('Content-Type', 'text/html');
+    response.end(util.ReadFile("../../src/index.html"));
+}
+
 function HandlePostRequest(request, response)
 {
     var rawData = "";
@@ -174,6 +183,10 @@ function HandlePostRequest(request, response)
         {
             case "login":
                 HandleLoginRequest(request, response, form);
+                break;
+
+            case "createAccount":
+                HandleCreateAccountForm(request, response, form);
                 break;
 
             default:
