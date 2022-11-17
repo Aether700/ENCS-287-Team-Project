@@ -33,7 +33,6 @@ function AssessmentToHTMLStrTeacherGrade()
         </form>
         <br>
         <br>
-        <br>
         <table>
             <tr>
                 <th>Max Value For Each Question</th>
