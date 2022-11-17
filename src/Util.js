@@ -60,7 +60,20 @@ function GenerateClientSideFunctionSendPostForm(hostname, port)
         + "}\n";
 }
 
+function GenerateClientSideFunctionSendGetRequest()
+{
+    return ""
+        + "function SendGetRequest(resource)\n"
+        + "{\n"
+        + "    var xmlHttp = new XMLHttpRequest();\n"
+        + "    xmlHttp.open(\"GET\", resource, false );"
+        + "    xmlHttp.send();\n"
+        + "    return xmlHttp.responseText;\n"
+        + "}\n";
+}
+
 module.exports = { 
     ReadFile, WriteToFile, GenerateHTMLHeader, 
-    GenerateHTMLFooter, GenerateClientSideFunctionSendPostForm,
+    GenerateHTMLFooter, GenerateClientSideFunctionSendPostForm, 
+    GenerateClientSideFunctionSendGetRequest,
     dataDirectory };

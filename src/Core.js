@@ -127,7 +127,7 @@ function HandleGetRequest(request, response)
 
 function HandleLoginRequest(request, response, form)
 {
-    console.log("handling logging request");
+    console.log("\nhandling logging request");
     let user = database.OnLogin(form);
             
     if (user != undefined)
@@ -161,11 +161,15 @@ function HandleLoginRequest(request, response, form)
 
 function HandleCreateAccountForm(request, response, form)
 {
-    console.log(form.username + ": " + form.password + ": " + form.passwordReEntered + ": " + form.userType);
-    // temp
+    console.log("\ncreating new account");
+    let userType = form.userType == "Teacher" ? database.AccountType.Teacher : database.AccountType.Student;
+    database.database.CreateAccount(form.username, form.password, userType);
+    
     response.statusCode = 200;
     response.setHeader('Content-Type', 'text/html');
     response.end(util.ReadFile("../../src/index.html"));
+
+    console.log("created account with username: " + form.username);
 }
 
 function HandlePostRequest(request, response)
@@ -186,12 +190,10 @@ function HandlePostRequest(request, response)
                 break;
 
             case "createAccount":
-                console.log("form properly identified")
                 HandleCreateAccountForm(request, response, form);
                 break;
 
             default:
-                console.log("unknown form detected (debug): " + form.formType);
                 response.statusCode = 404;
                 response.setHeader('Content-Type', 'text/plain');
                 if (form.formType == undefined)

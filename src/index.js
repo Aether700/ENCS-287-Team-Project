@@ -86,9 +86,8 @@ function LoadIndexClientJs(hostname, port, usernames)
     src += "    {\n";
     src += "        SendFormPost(object, function(event)\n";
     src += "        {\n";
-    src += "            console.log(\"temp: loading successful\");\n";
+    src += "            WriteToOutput(\"Account Created\");\n";
     src += "        });\n";
-    src += "        WriteToOutput(\"Account Created\");\n";
     src += "    }\n";
     src += "}";
 
