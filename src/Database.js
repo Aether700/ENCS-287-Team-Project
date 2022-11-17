@@ -107,6 +107,8 @@ class Account
 
     GetID() { return this.#id; }
 
+    GetUsername() { return this.#username; }
+
     GetUserType() { return this.#userType; }
 
     Validate(username, hashedPassword)
@@ -448,6 +450,16 @@ class Database
     }
 
     GetAssessments() { return this.#assessments; }
+
+    GetUsernames()
+    {
+        let usernameArr = [];
+        accounts.forEach(function (account)
+        {
+            usernameArr.push(account.GetUsername());
+        });
+        return usernameArr;
+    }
 
     // returns undefined if the id provided is invalid
     GetUserType(id) 
