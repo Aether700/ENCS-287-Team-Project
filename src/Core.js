@@ -110,6 +110,12 @@ function HandleGetRequest(request, response)
                 response.end(util.ReadFile("../../src/index.css"));
                 break;
 
+            case "/index.js":
+                response.statusCode = 200;
+                response.setHeader('Content-Type', 'text/js');
+                response.end(util.ReadFile("../../src/index.js"));
+                break;
+
             default:
                 console.log("Unknown Webpage: " + request.url);
                 response.statusCode = 404;
@@ -186,10 +192,12 @@ function HandlePostRequest(request, response)
                 break;
 
             case "createAccount":
+                console.log("form properly identified")
                 HandleCreateAccountForm(request, response, form);
                 break;
 
             default:
+                console.log("unknown form detected (debug): " + form.formType);
                 response.statusCode = 404;
                 response.setHeader('Content-Type', 'text/plain');
                 if (form.formType == undefined)
