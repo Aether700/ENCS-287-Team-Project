@@ -28,6 +28,7 @@ function AssessmentToHTMLStrTeacherGrade()
                 <button class="dropbtn" onclick = \"GenerateTable();\">Create Assessment</button>
             </div>
 
+            
             <div id = \"questionTable\">
             </div>
         </form>
