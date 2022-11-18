@@ -18,6 +18,7 @@ function UsernamesToStr(usernames)
 function LoadIndexClientJs(hostname, port, usernames)
 {
     let src = util.GenerateClientSideFunctionSendPostForm(hostname, port) + "\n";
+    src += "const usernamesInUse = [" + UsernamesToStr(usernames) + "];\n\n";
     src += "function WriteToOutput(str)\n";
     src += "{\n";
     src += "    document.getElementById(\"AccountCreationOutput\").innerText = str;\n";
@@ -37,7 +38,6 @@ function LoadIndexClientJs(hostname, port, usernames)
     
     src += "function ValidateUsername(username)\n";
     src += "{\n";
-    src += "    const usernamesInUse = [" + UsernamesToStr(usernames) + "];\n\n";
     
     src += "    if (username == \"\" || username == undefined)\n";
     src += "    {\n";
@@ -87,6 +87,7 @@ function LoadIndexClientJs(hostname, port, usernames)
     src += "        SendFormPost(object, function(event)\n";
     src += "        {\n";
     src += "            WriteToOutput(\"Account Created\");\n";
+    src += "            usernamesInUse.push(object.username);\n";
     src += "        });\n";
     src += "    }\n";
     src += "}";

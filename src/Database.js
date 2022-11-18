@@ -443,12 +443,6 @@ class Database
     
     CreateAccount(username, password, userType)
     {
-        if (this.GetUsernames().includes(username))
-        {
-            // account already created
-            return;
-        }
-
         let id = GenerateGUID();
         accounts.push(new Account(username, HashPassword(password), 
             userType, id));
