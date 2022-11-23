@@ -75,6 +75,12 @@ function GeneratePage(request, response, user, url)
                 response.end(teacher.LoadTeacherHomePage(user));
                 break;
 
+            case "letterGrade":
+                response.statusCode = 200;
+                response.setHeader('Content-Type', 'text/html');
+                response.end(teacher.LoadTeacherLetterGrade(user));
+                break;
+
             default:
                 response.statusCode = 404;
                 response.setHeader('Content-Type', 'text/plain');

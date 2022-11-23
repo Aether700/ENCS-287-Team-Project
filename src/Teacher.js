@@ -83,7 +83,7 @@ function AssessmentToHTMLStrTeacher(assessment)
     return htmlStr;
 }
 
-function HTMLStrLetterGrade()
+function LoadTeacherLetterGrade(user)
 {
     const studentIds = database.database.GetStudentIDs()
     const numberOfStudents = studentIds.length
@@ -170,7 +170,9 @@ function GenerateTeacherBody(user)
         body += AssessmentToHTMLStrTeacher(assessment);
     });
 
-    body += "<br><br><input type='button'  value='Assign letter grade' />"
+    body += "<br><br><input type='button' onclick = \"document.location.href = '/teacher/letterGrade/" 
+        + user.GetID() + "';\" value='Assign letter grade' />";
+
     body += GenerateFooter();
     body += "</body>";
     return body;
@@ -208,4 +210,4 @@ function LoadTeacherHomePage(user)
     return teacherPage; 
 }
 
-module.exports = { LoadTeacherHomePage };
+module.exports = { LoadTeacherHomePage, LoadTeacherLetterGrade };
