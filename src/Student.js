@@ -42,14 +42,7 @@ function GenerateStudentBody(user)
     });
     
     body += "<p>Total: &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;" + user.GetFinalGrade().toFixed(2) + "/100</p>";
-    if (typeof user.GetLetterGrade() === "undefined"){
-        body += "<p>Letter Grade:&emsp;&emsp;&emsp;" + "N/A" + "</p>"; 
-    }
-    else{
-        body += "<p>Letter Grade:&emsp;&emsp;&emsp;" + user.GetLetterGrade() + "</p>"; 
-    }
-  
-
+    body += "<p>Letter Grade:&emsp;&emsp;&emsp;" + user.GetLetterGrade() + "</p>"; 
     body += "</body>";
 
     return body;
