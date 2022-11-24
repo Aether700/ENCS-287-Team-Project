@@ -211,4 +211,4 @@ function LoadTeacherHomePage(user)
     return teacherPage; 
 }
 
-module.exports = { LoadTeacherHomePage };
+module.exports = { LoadTeacherHomePage, LoadTeacherLetterGrade };

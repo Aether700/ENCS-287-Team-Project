@@ -75,6 +75,12 @@ function GeneratePage(request, response, user, url)
                 response.end(teacher.LoadTeacherHomePage(user));
                 break;
 
+            case "letterGrade":
+                response.statusCode = 200;
+                response.setHeader('Content-Type', 'text/html');
+                response.end(teacher.LoadTeacherLetterGrade(user));
+                break;
+
             default:
                 response.statusCode = 404;
                 response.setHeader('Content-Type', 'text/plain');
@@ -108,6 +114,12 @@ function HandleGetRequest(request, response)
                 response.statusCode = 200;
                 response.setHeader('Content-Type', 'text/css');
                 response.end(util.ReadFile("../../src/index.css"));
+                break;
+
+            case "/teacher/TeacherClientSide.js":
+                response.statusCode = 200;
+                response.setHeader('Content-Type', 'text/javascript');
+                response.end(teacher.LoadTeacherClientSideJs(database.database.GetStudentIDs()));
                 break;
 
             default:
