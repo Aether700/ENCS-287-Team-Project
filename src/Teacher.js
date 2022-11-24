@@ -97,6 +97,7 @@ function LoadTeacherLetterGrade(user)
     console.log(studentData[0])
     
     return `
+    <input type="button" value="Go back to assessment page">
     <div ><h2>SOEN 287 Section Q </h2> </div>
     <div><h3>Assign letter grade for the students</h3></div>
     <div><h4>ID &emsp;&emsp;&emsp;&emsp; Letter Grade</h4></div>
