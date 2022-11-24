@@ -437,6 +437,8 @@ class Database
         this.#letterGrades = new Map();
     }
 
+    GetStudentIDs() { return students; }
+
     AddAssessment(assessment)
     {
         this.#assessments.push(assessment);
