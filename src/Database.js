@@ -462,6 +462,8 @@ class Database
         this.SaveToFile();
     }
 
+    GetStudentIDs() { return students; }
+
     AddAssessment(assessment)
     {
         this.#assessments.push(assessment);
