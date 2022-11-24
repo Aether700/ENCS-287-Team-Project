@@ -5,6 +5,10 @@ const student = require("../src/Student.js");
 const teacher = require("../src/Teacher.js");
 const util = require("../src/Util.js");
 const database = require("../src/Database.js");
+const index = require("../src/index.js");
+
+const hostname = '127.0.0.1';
+const port = 3000;
 
 function GeneratePage(request, response, user, url)
 {
@@ -36,16 +40,6 @@ function GeneratePage(request, response, user, url)
                 response.setHeader('Content-Type', 'text/html');
                 response.end(student.LoadStudentHomePage(user));
                 break;
-
-            // temporary code for demonstration purposes
-            case "test":
-                response.statusCode = 200;
-                response.setHeader('Content-Type', 'text/html');
-                response.end("<!DOCTYPE html><html><head></head><body><p>student page generated</p>"
-                    + "<input type = \"button\" onclick = \"window.location.href=\'/student/home/" 
-                    + user.GetID() +  "\'\" value = \"Go to Test Page\"></body></html>");
-                break;
-            /////////////////////////////////////////////////
 
             default:
                 response.statusCode = 404;
@@ -116,6 +110,12 @@ function HandleGetRequest(request, response)
                 response.end(util.ReadFile("../../src/index.css"));
                 break;
 
+            case "/indexClient.js":
+                response.statusCode = 200;
+                response.setHeader('Content-Type', 'text/js');
+                response.end(index.LoadIndexClientJs(hostname, port, database.database.GetUsernames()));
+                break;
+
             case "/teacher/TeacherClientSide.js":
                 response.statusCode = 200;
                 response.setHeader('Content-Type', 'text/javascript');
@@ -139,7 +139,7 @@ function HandleGetRequest(request, response)
 
 function HandleLoginRequest(request, response, form)
 {
-    console.log("handling logging request");
+    console.log("\nhandling logging request");
     let user = database.OnLogin(form);
             
     if (user != undefined)
@@ -171,6 +171,19 @@ function HandleLoginRequest(request, response, form)
     }
 }
 
+function HandleCreateAccountForm(request, response, form)
+{
+    console.log("\ncreating new account");
+    let userType = form.userType == "Teacher" ? database.AccountType.Teacher : database.AccountType.Student;
+    database.database.CreateAccount(form.username, form.password, userType);
+    
+    response.statusCode = 200;
+    response.setHeader('Content-Type', 'text/html');
+    response.end(util.ReadFile("../../src/index.html"));
+
+    console.log("created account with username: " + form.username);
+}
+
 function HandlePostRequest(request, response)
 {
     var rawData = "";
@@ -186,6 +199,10 @@ function HandlePostRequest(request, response)
         {
             case "login":
                 HandleLoginRequest(request, response, form);
+                break;
+
+            case "createAccount":
+                HandleCreateAccountForm(request, response, form);
                 break;
 
             default:
@@ -218,8 +235,6 @@ function ServerRequestListener(request, response)
     }
 }
 
-const hostname = '127.0.0.1';
-const port = 3000;
 
 database.InitializeDatabase();
 const server = http.createServer(ServerRequestListener);
