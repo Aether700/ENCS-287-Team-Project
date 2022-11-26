@@ -27,33 +27,9 @@ function AssessmentToHTMLStrTeacherGrade()
                 <br>
                 <button class="dropbtn" onclick = \"GenerateTable();\">Create Assessment</button>
             </div>
-
-            
             <div id = \"questionTable\">
             </div>
-        </form>
-        <br>
-        <br>
-        <table>
-            <tr>
-                <th>Max Value For Each Question</th>
-                <td> <input type="number"> </td>
-                <td> <input type="number"> </td>
-                <td> <input type="number"> </td>
-                </tr>
-                <tr>
-                    <td>645258</td>
-                    <td> <input type="number"> </td>
-                    <td> <input type="number"> </td>
-                    <td> <input type="number"> </td>
-                </tr>
-                <tr>
-                    <td>432483</td>
-                    <td> <input type="number"> </td>
-                    <td> <input type="number"> </td>
-                    <td> <input type="number"> </td>
-                </tr>
-            </table>
+        </form>   
     </div> `;
 }
 
@@ -168,11 +144,25 @@ function GenerateFunctionGenerateTable()
     return "function GenerateTable()\n"
         + "{\n" 
         +     "\tlet numQuestions = document.getElementById(\"numQuestions\").value;\n"
-        +     "\tconsole.log(\"Generating table with \" + numQuestions + \" questions\");\n"
+        +     "\tlet tableHtml = \"<table>\";\n"
+        +     "\tlet html1 = \"<tr><th>Max Value For Each Question</th>\";\n"
+        +     "\tlet html2 = \"<tr><th>645258</th>\";\n"
+        +     "\tlet html3 = \"<tr><th>432483</th>\";\n"
+        +     "\tfor(let i = 0; i< numQuestions; i++){\n"
+            +     "\thtml1 += \"<td><input type='number'> </td>\";\n"
+            +     "\thtml2 += \"<td><input type='number'> </td>\";\n"
+            +     "\thtml3 += \"<td><input type='number'> </td>\";\n"
+        +     "\t}\n"
+        +     "\thtml1 += \"</tr>\";\n"
+        +     "\thtml2 += \"</tr>\";\n"
+        +     "\thtml3 += \"</tr>\";\n"
+        +     "\ttableHtml += html1;\n"
+        +     "\ttableHtml += html2;\n"
+        +     "\ttableHtml += html3;\n"
+        +     "\ttableHtml += \"</table>\";\n"
         +     "\tlet tableDiv = document.getElementById(\"questionTable\");\n"
-        +     "\ttableDiv.innerHTML = \"<p>Table goes here</p>\";\n" 
-        +     "\ttableDiv.innerHTML += \"<p>Table goes here again</p>\";\n"    
-        + "}";
+        +     "\ttableDiv.innerHTML = tableHtml;\n"  
+         + "return false;} ";
 }
 
 function LoadTeacherClientSideJs(studentIDs)
