@@ -25,7 +25,7 @@ function AssessmentToHTMLStrTeacherGrade()
             <input id = "numQuestions" type="number" min = 1/>
             <br>
             <br>
-            <button type = "button" class="dropbtn" onclick = "GenerateTable();">Create Assessment</button>
+            <button type = "button" class="dropbtn" onclick = "GenerateAssessmentGradeTable();">Create Assessment</button>
             <br>
             <br>
 
@@ -160,7 +160,7 @@ function GenerateTeacherBody(user)
         + user.GetID() + "';\" value='Assign letter grades' />";
 
     body += GenerateFooter();
-    body += "<script src=\"/teacher/TeacherClientSide.js\"></script>";
+    body += "<script src=\"/teacher/TeacherClientSide.js/" + user.GetID() + "\"></script>";
     body += "</body>";
     return body;
 }
@@ -197,75 +197,153 @@ function LoadTeacherHomePage(user)
     return teacherPage; 
 }
 
-function GenerateFunctionGenerateTable()
+function LoadTeacherClientSideJs(user, studentIDs, hostname, port)
 {
-    return "function GenerateTable()\n"
-        + "{\n" 
-        +     "\tif (!ValidateInput())\n"
-        +     "\t{\n"
-        +     "\t\treturn false;\n"
-        +     "\t}\n\n"
-
-        +     "\tlet numQuestions = document.getElementById(\"numQuestions\").value;\n"
-        +     "\tlet tableHtml = \"<table>\";\n"
-        +     "\tlet html1 = \"<tr><th>Max Value For Each Question</th>\";\n"
-        +     "\tlet html2 = \"<tr><th>645258</th>\";\n"
-        +     "\tlet html3 = \"<tr><th>432483</th>\";\n"
-        +     "\tfor(let i = 0; i< numQuestions; i++){\n"
-            +     "\thtml1 += \"<td><input type='number'> </td>\";\n"
-            +     "\thtml2 += \"<td><input type='number'> </td>\";\n"
-            +     "\thtml3 += \"<td><input type='number'> </td>\";\n"
-        +     "\t}\n"
-        +     "\thtml1 += \"</tr>\";\n"
-        +     "\thtml2 += \"</tr>\";\n"
-        +     "\thtml3 += \"</tr>\";\n"
-        +     "\ttableHtml += html1;\n"
-        +     "\ttableHtml += html2;\n"
-        +     "\ttableHtml += html3;\n"
-        +     "\ttableHtml += \"</table>\";\n"
-        +     "\tlet tableDiv = document.getElementById(\"questionTable\");\n"
-        +     "\ttableDiv.innerHTML = tableHtml;\n"
-        +     "\ttableDiv.innerHTML += \"<br/><button type = \\\"button\\\" onclick = \\\"document.write('Test');\\\" value = \\\"Save Assessment\\\">Save Assessment</button>\";\n" 
-        +     "\treturn true;\n} ";
-}
-
-function GenerateValidateInput()
-{
-    return `function ValidateInput()
-    {
-        let numQuestions = document.getElementById(\"numQuestions\").value;
-        let weight = document.getElementById(\"weight\").value;
-        let name = document.getElementById(\"assessmentName\").value;
-        let tableDiv = document.getElementById(\"questionTable\");
-
-        if (name == "" || name == undefined)
-        {
-            tableDiv.innerHTML = "<p>Please provide a name to your assessment</p>";
-            return false;   
-        }
-
-        if (weight <= 0 || weight > 100)
-        {
-            tableDiv.innerHTML = "<p>Please provide a weight greater than 0 and less than or equal to 100</p>";
-            return false;
-        }
-
-        if (numQuestions <= 0 || numQuestions == undefined || numQuestions == "")
-        {
-            tableDiv.innerHTML = "<p>Please provide a positive non zero number of questions</p>";
-            return false;
-        }
-
-        return true;
-    }`;
-}
-
-function LoadTeacherClientSideJs(studentIDs)
-{
-    console.log("loading /teacher/TeacherClientSide.js");
+    console.log("loading /teacher/TeacherClientSide.js/" + user.GetID());
     let srcCode = "const studentIDs = [" + studentIDs.join() + "];\n";
-    srcCode += "\n" + GenerateValidateInput();
-    srcCode += "\n\n" + GenerateFunctionGenerateTable();
+    srcCode += util.GenerateClientSideFunctionSendPostForm(hostname, port) + "\n\n";
+    srcCode += 
+        `function GenerateMaxGradeRow(numQuestions)
+        {
+            let htmlStr = "";
+            htmlStr += "<tr><th>Max Grade For Each Question</th>";
+            for (let i = 0; i < numQuestions; i++)
+            {
+                htmlStr += "<td><input type = \\"number\\" name = \\"cells\\"/></td>";
+            }
+            htmlStr += "</tr>";
+            return htmlStr;
+        }
+    
+        function GenerateStudentRows(numQuestions)
+        {
+            let htmlStr = "";
+            studentIDs.forEach(function (id)
+            {
+                htmlStr += "<tr><th>" + id + "</th>";
+    
+                for (let i = 0; i < numQuestions; i++)
+                {
+                    htmlStr += "<td><input type = \\"number\\" name = \\"cells\\"/></td>";
+                }
+    
+                htmlStr += "</tr>";
+            });
+            return htmlStr;
+        }
+    
+        function ValidateInput(tableDiv, numQuestions)
+        {
+            let assessmentName = document.getElementById("assessmentName").value;
+            let assessmentWeight = document.getElementById("weight").value;
+
+            if (assessmentName == "" || assessmentName == undefined)
+            {
+                tableDiv.innerHTML = "<p>Please fill in the name field for the assessement</p>";
+                return false;
+            }
+
+            if (assessmentWeight == "" || assessmentWeight == undefined || assessmentWeight <= 0)
+            {
+                tableDiv.innerHTML = "<p>Please give a positive non zero weight for the assessement</p>";
+                return false;
+            }
+
+            if (assessmentWeight > 100)
+            {
+                tableDiv.innerHTML = "<p>The assessment weight cannot exceed 100%</p>";
+                return false;
+            }
+
+            if (numQuestions == undefined || numQuestions == "" || numQuestions == 0)
+            {
+                tableDiv.innerHTML = "<p>Please specify the number of questions for the assessement</p>";
+                return false;
+            }
+
+            return true;
+        }
+
+        function GenerateAssessmentGradeTable()
+        {
+            let numQuestions = document.getElementById("numQuestions").value;
+            let tableDiv = document.getElementById("questionTable");
+
+            if (!ValidateInput(tableDiv, numQuestions))
+            {
+                return;
+            }
+    
+            let divStr = "<table>";
+            divStr += GenerateMaxGradeRow(numQuestions);
+            divStr += GenerateStudentRows(numQuestions);
+            divStr += "</table>";
+            divStr += "<br/><input type = \\"hidden\\" name=\\"id\\" value = \\"` + user.GetID() 
+                + `\\">";
+            divStr += "<br/><button type = \\"button\\" onclick = \\"SubmitCreateAssessmentForm(this);\\">` 
+                + `Save Assessment</button>";
+            tableDiv.innerHTML = divStr;
+        }
+        
+        function SubmitCreateAssessmentForm()
+        {
+            let formData = 
+            {
+                name: document.getElementById("assessmentName").value,
+                weight: document.getElementById("weight").value,
+                numQuestions: document.getElementById("numQuestions").value,
+                formType: "assessmentCreation",
+                id: `+ user.GetID() +`,
+                gradesTable: "["
+            };
+
+            let table = document.getElementsByName("cells");
+            let grades = new Array();
+
+            table.forEach(function (item, key)
+            {
+                if (item.value == "" || item.value == undefined)
+                {
+                    grades.push(0);
+                }
+                else
+                {
+                    grades.push(item.value);
+                }
+            });
+
+            console.log(grades.join());
+
+            let maxGrade = new Array();
+            for (let i = 0; i < formData.numQuestions; i++)
+            {
+                maxGrade.push(grades.at(i));
+            }
+            formData.gradesTable += "{\\\"key\\\": \\\"maxGrade\\\", \\\"value\\\": [" + maxGrade.join() + "]},";
+
+            let index = 0;
+            while (index < studentIDs.length)
+            {
+                let studentGrades = new Array();
+                for (let i = 0; i < formData.numQuestions; i++)
+                {
+                    studentGrades.push(grades.at(i + ((index + 1) * formData.numQuestions)));
+                }
+                formData.gradesTable += "{\\\"key\\\":" + studentIDs.at(index) 
+                    + ", \\\"value\\\":[" + studentGrades.join() + "]}";
+                if (index != studentIDs.length - 1)
+                {
+                    formData.gradesTable += ",";
+                }
+                index++;
+            }
+            formData.gradesTable += "]";
+
+            SendFormPost(formData, function(event)
+            {
+                document.getElementById("gradeTable").innerHtml = "<p>Assessment Created</p>";
+            });
+        }`;
     return srcCode;
 }
 
