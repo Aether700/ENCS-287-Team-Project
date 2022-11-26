@@ -310,8 +310,6 @@ function LoadTeacherClientSideJs(user, studentIDs, hostname, port)
                 }
             });
 
-            console.log(grades.join());
-
             let maxGrade = new Array();
             for (let i = 0; i < formData.numQuestions; i++)
             {
