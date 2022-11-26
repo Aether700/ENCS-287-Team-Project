@@ -184,6 +184,17 @@ function HandleCreateAccountForm(request, response, form)
     console.log("created account with username: " + form.username);
 }
 
+function HandleAssessmentCreation(request, response, form)
+{
+    // receive and save assessment data
+    console.log("\nCreating assessment \"" + form.name + "\"");
+    database.CreateAssessmentFromForm(form);
+
+    response.statusCode = 200;
+    response.setHeader('Content-Type', 'text/html');
+    response.end(teacher.LoadTeacherHomePage(new database.User(parseInt(form.id))));
+}
+
 function HandlePostRequest(request, response)
 {
     var rawData = "";
@@ -199,6 +210,10 @@ function HandlePostRequest(request, response)
         {
             case "login":
                 HandleLoginRequest(request, response, form);
+                break;
+    
+            case "assessmentCreation":
+                HandleAssessmentCreation(request, response, form);
                 break;
 
             case "createAccount":

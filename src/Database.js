@@ -300,19 +300,28 @@ class Assessment
     // returns a map with the grades as key and the number of students as elements
     GetDistribution()
     {
+        console.log("this = \"" + this + "\"");
         let distribution = new Map();
         this.#marks.forEach(function (mark, id)
         {
             let grade = mark.GetGrade();
+            console.log("grade: " + grade);
             if (distribution.has(grade))
             {
-                distribution[grade] = distribution[grade] + 1;
+                console.log(grade + ": " + distribution.get(grade));
+                distribution.set(grade, distribution.get(grade) + 1);
             }
             else
             {
                 distribution.set(grade, 1);
+                console.log(grade + ": " + distribution.get(grade));
             }
         });
+        distribution.forEach(function(value, key)
+        {
+            console.log(key + ": " + value);
+        });
+
         return distribution;
     }
 
@@ -847,5 +856,10 @@ function OnLogin(form)
     return new User(accountToLogin.GetID());
 }
 
+function CreateAssessmentFromForm(form)
+{
+    // handle form here
+}
+
 module.exports = { database, Database, Account, User, UserAssessment, AccountType, 
-    InitializeDatabase, GenerateGUID, IsGUIDValid, SaveGUIDs, OnLogin };
+    InitializeDatabase, GenerateGUID, IsGUIDValid, SaveGUIDs, OnLogin, CreateAssessmentFromForm };
