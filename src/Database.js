@@ -9,6 +9,8 @@ var accounts = new Array();
 let students = new Array();
 const maxGUID = 999999;
 
+const noLetterGradeMessage = "Not Submitted Yet";
+
 // enum like const object used to differentiate between student accounts and teacher accounts
 const AccountType = 
 {
@@ -106,6 +108,8 @@ class Account
     }
 
     GetID() { return this.#id; }
+
+    GetUsername() { return this.#username; }
 
     GetUserType() { return this.#userType; }
 
@@ -436,6 +440,27 @@ class Database
         this.#assessments = new Array();
         this.#letterGrades = new Map();
     }
+    
+    CreateAccount(username, password, userType)
+    {
+        let id = GenerateGUID();
+        accounts.push(new Account(username, HashPassword(password), 
+            userType, id));
+        
+        if (userType == AccountType.Student)
+        {
+            students.push(id);
+        }
+
+        this.#assessments.forEach(function (assessment)
+        {
+            assessment.SetGrades(id, AssessmentResult.DefaultResult(assessment.GetQuestions().length));
+        });
+
+        this.SetLetterGrade(id, noLetterGradeMessage);
+
+        this.SaveToFile();
+    }
 
     GetStudentIDs() { return students; }
 
@@ -450,6 +475,16 @@ class Database
     }
 
     GetAssessments() { return this.#assessments; }
+
+    GetUsernames()
+    {
+        let usernameArr = [];
+        accounts.forEach(function (account)
+        {
+            usernameArr.push(account.GetUsername());
+        });
+        return usernameArr;
+    }
 
     // returns undefined if the id provided is invalid
     GetUserType(id) 
@@ -479,7 +514,8 @@ class Database
     {
         if (!IsGUIDValid(id) || this.GetUserType(id) != AccountType.Student)
         {
-            return undefined;
+            console.log("invalid id provided");
+            return;
         }
         this.#letterGrades.set(id, letterGrade);
     }
@@ -786,7 +822,7 @@ function InitializeDatabase()
 
         accounts.forEach(function(account)
         {
-            database.SetLetterGrade(account.GetID(), "Not Submitted Yet");
+            database.SetLetterGrade(account.GetID(), noLetterGradeMessage);
         });
         //////////////////////////////////////
         database.SaveToFile();

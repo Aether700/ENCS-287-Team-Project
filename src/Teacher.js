@@ -12,24 +12,42 @@ function AssessmentToHTMLStrTeacherGrade()
     <div ><h2>SOEN 287 Section Q</h2> </div>
     <div><h3>Add assessment for a student</h3></div>
     <div class="mainBox">
-        <form method = \"post\">
-            <div class="text02Box"> 
-                <span class="datum">Assessment Name:&emsp;</span>
-                <input id = "in3" type="text"/>
-                <br>
-                <span class="datum" >Weight:&emsp;&emsp;&emsp;&emsp;&emsp;&nbsp;&nbsp;</span>
-                <input id="in2" type="number"/><span> % </span>
-                <br>
-                <br>
-                <span class="datum">Number of questions:</span>
-                <input id = "numQuestions" type="number"/>
-                <br>
-                <br>
-                <button class="dropbtn" onclick = \"GenerateTable();\">Create Assessment</button>
-            </div>
-            <div id = \"questionTable\">
-            </div>
-        </form>   
+        <div class="text02Box"> 
+            <span class="datum">Assessment Name:&emsp;</span>
+            <input id = "in3" type="text"/>
+    <br>
+            <span class="datum" >Weight:&emsp;&emsp;&emsp;&emsp;&emsp;&nbsp;&nbsp;</span>
+            <input id="in2" type="number"/><span> % </span>
+    <br>
+    <br>
+            <span class="datum">Number of questions:</span>
+            <input id = "in3" type="number"/>
+    <br>
+    <br>
+            <button class="dropbtn">Create Assessment</button>
+    <br>
+    <br>
+            <table>
+                <tr>
+                    <th>Max Value For Each Question</th>
+                    <td> <input type="number"> </td>
+                    <td> <input type="number"> </td>
+                    <td> <input type="number"> </td>
+                </tr>
+                <tr>
+                    <td>645258</td>
+                    <td> <input type="number"> </td>
+                    <td> <input type="number"> </td>
+                    <td> <input type="number"> </td>
+                </tr>
+                <tr>
+                    <td>432483</td>
+                    <td> <input type="number"> </td>
+                    <td> <input type="number"> </td>
+                    <td> <input type="number"> </td>
+                </tr>
+            </table>
+        </div>
     </div> `;
 }
 
@@ -63,6 +81,58 @@ function AssessmentToHTMLStrTeacher(assessment)
         htmlStr += "<table><tr><td>" + QuestionToHTMLStrTeacher(assessment, questions[i], i) + "</td></tr></table>";
     }
     return htmlStr;
+}
+
+function LoadTeacherLetterGrade(user)
+{
+    const studentIds = database.database.GetStudentIDs()
+    const numberOfStudents = studentIds.length
+
+    const studentData = studentIds.map((studentId) =>{
+        return {
+            id: studentId,
+            grade: database.database.GetLetterGrade(studentId)
+        }
+    });
+    
+    return `
+    <input type="button" onclick = "document.location.href = '/teacher/home/` + user.GetID() 
+        + `'" value="Go back to assessment page">
+    <div ><h2>SOEN 287 Section Q </h2> </div>
+    <div><h3>Assign letter grade for the students</h3></div>
+    <div><h4>ID &emsp;&emsp;&emsp;&emsp; Letter Grade</h4></div>
+
+    <div class="mainBox">
+        <form id = "letter_grade">
+        </form>
+    </div>
+   
+    <script>
+        // Generate a dynamic number of inputs
+        var number = ${numberOfStudents};
+        // Get the element where the inputs will be added to
+        var letter_grade = document.getElementById("letter_grade");
+        var studentIds = [${studentIds}]
+        const studentData = ${JSON.stringify(studentData)}
+        for (i=0;i<number;i++){
+            const studentId = studentIds[i];
+            letter_grade.appendChild(document.createTextNode(studentId));
+            var input = document.createElement("input"); 
+            input.type = "text";
+            input.placeholder = "Enter letter grade";
+            if (typeof studentData[i].grade !== "undefined" ){
+                input.value = studentData[i].grade
+            }
+            input.name = studentId; 
+            input.id = studentId;
+            letter_grade.appendChild(input);
+            letter_grade.appendChild(document.createElement("br"));
+        }
+        var submit_button = document.createElement("input");
+        submit_button.type = "submit";
+        submit_button.value = "Submit";
+        letter_grade.appendChild(submit_button);
+    </script>`;
 }
 
 function GenerateTeacherPageHead()
@@ -101,8 +171,10 @@ function GenerateTeacherBody(user)
         body += AssessmentToHTMLStrTeacher(assessment);
     });
 
+    body += "<br><br><input type='button' onclick = \"document.location.href = '/teacher/letterGrade/" 
+        + user.GetID() + "';\" value='Assign letter grades' />";
+
     body += GenerateFooter();
-    body += "<script src = \"/teacher/TeacherClientSide.js\"></script>";
     body += "</body>";
     return body;
 }
@@ -174,4 +246,4 @@ function LoadTeacherClientSideJs(studentIDs)
     return srcCode;
 }
 
-module.exports = { LoadTeacherHomePage, LoadTeacherClientSideJs };
+module.exports = { LoadTeacherHomePage, LoadTeacherClientSideJs, LoadTeacherLetterGrade };
