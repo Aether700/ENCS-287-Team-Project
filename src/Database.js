@@ -447,11 +447,6 @@ class Database
         let id = GenerateGUID();
         accounts.push(new Account(username, HashPassword(password), 
             userType, id));
-        
-        if (userType == AccountType.Student)
-        {
-            students.push(id);
-        }
 
         this.#assessments.forEach(function (assessment)
         {
