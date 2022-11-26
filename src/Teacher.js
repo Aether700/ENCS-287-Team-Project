@@ -13,40 +13,25 @@ function AssessmentToHTMLStrTeacherGrade()
     <div><h3>Add assessment for a student</h3></div>
     <div class="mainBox">
         <div class="text02Box"> 
+            <input type =  "hidden" name = "formType" value = "createAssessment"/>
             <span class="datum">Assessment Name:&emsp;</span>
-            <input id = "in3" type="text"/>
-    <br>
+            <input id = "assessmentName" type="text"/>
+            <br>
             <span class="datum" >Weight:&emsp;&emsp;&emsp;&emsp;&emsp;&nbsp;&nbsp;</span>
-            <input id="in2" type="number"/><span> % </span>
-    <br>
-    <br>
+            <input id="weight" type="number" min = 0.0001 step = any max = 100/><span> % </span>
+            <br>
+            <br>
             <span class="datum">Number of questions:</span>
-            <input id = "in3" type="number"/>
-    <br>
-    <br>
-            <button class="dropbtn">Create Assessment</button>
-    <br>
-    <br>
-            <table>
-                <tr>
-                    <th>Max Value For Each Question</th>
-                    <td> <input type="number"> </td>
-                    <td> <input type="number"> </td>
-                    <td> <input type="number"> </td>
-                </tr>
-                <tr>
-                    <td>645258</td>
-                    <td> <input type="number"> </td>
-                    <td> <input type="number"> </td>
-                    <td> <input type="number"> </td>
-                </tr>
-                <tr>
-                    <td>432483</td>
-                    <td> <input type="number"> </td>
-                    <td> <input type="number"> </td>
-                    <td> <input type="number"> </td>
-                </tr>
-            </table>
+            <input id = "numQuestions" type="number" min = 1/>
+            <br>
+            <br>
+            <button type = "button" class="dropbtn" onclick = "GenerateTable();">Create Assessment</button>
+            <br>
+            <br>
+
+            <div id = "questionTable">
+            </div>
+    
         </div>
     </div> `;
 }
@@ -175,6 +160,7 @@ function GenerateTeacherBody(user)
         + user.GetID() + "';\" value='Assign letter grades' />";
 
     body += GenerateFooter();
+    body += "<script src=\"/teacher/TeacherClientSide.js\"></script>";
     body += "</body>";
     return body;
 }
@@ -211,4 +197,76 @@ function LoadTeacherHomePage(user)
     return teacherPage; 
 }
 
-module.exports = { LoadTeacherHomePage, LoadTeacherLetterGrade };
+function GenerateFunctionGenerateTable()
+{
+    return "function GenerateTable()\n"
+        + "{\n" 
+        +     "\tif (!ValidateInput())\n"
+        +     "\t{\n"
+        +     "\t\treturn false;\n"
+        +     "\t}\n\n"
+
+        +     "\tlet numQuestions = document.getElementById(\"numQuestions\").value;\n"
+        +     "\tlet tableHtml = \"<table>\";\n"
+        +     "\tlet html1 = \"<tr><th>Max Value For Each Question</th>\";\n"
+        +     "\tlet html2 = \"<tr><th>645258</th>\";\n"
+        +     "\tlet html3 = \"<tr><th>432483</th>\";\n"
+        +     "\tfor(let i = 0; i< numQuestions; i++){\n"
+            +     "\thtml1 += \"<td><input type='number'> </td>\";\n"
+            +     "\thtml2 += \"<td><input type='number'> </td>\";\n"
+            +     "\thtml3 += \"<td><input type='number'> </td>\";\n"
+        +     "\t}\n"
+        +     "\thtml1 += \"</tr>\";\n"
+        +     "\thtml2 += \"</tr>\";\n"
+        +     "\thtml3 += \"</tr>\";\n"
+        +     "\ttableHtml += html1;\n"
+        +     "\ttableHtml += html2;\n"
+        +     "\ttableHtml += html3;\n"
+        +     "\ttableHtml += \"</table>\";\n"
+        +     "\tlet tableDiv = document.getElementById(\"questionTable\");\n"
+        +     "\ttableDiv.innerHTML = tableHtml;\n"
+        +     "\ttableDiv.innerHTML += \"<br/><button type = \\\"button\\\" onclick = \\\"document.write('Test');\\\" value = \\\"Save Assessment\\\">Save Assessment</button>\";\n" 
+        +     "\treturn true;\n} ";
+}
+
+function GenerateValidateInput()
+{
+    return `function ValidateInput()
+    {
+        let numQuestions = document.getElementById(\"numQuestions\").value;
+        let weight = document.getElementById(\"weight\").value;
+        let name = document.getElementById(\"assessmentName\").value;
+        let tableDiv = document.getElementById(\"questionTable\");
+
+        if (name == "" || name == undefined)
+        {
+            tableDiv.innerHTML = "<p>Please provide a name to your assessment</p>";
+            return false;   
+        }
+
+        if (weight <= 0 || weight > 100)
+        {
+            tableDiv.innerHTML = "<p>Please provide a weight greater than 0 and less than or equal to 100</p>";
+            return false;
+        }
+
+        if (numQuestions <= 0 || numQuestions == undefined || numQuestions == "")
+        {
+            tableDiv.innerHTML = "<p>Please provide a positive non zero number of questions</p>";
+            return false;
+        }
+
+        return true;
+    }`;
+}
+
+function LoadTeacherClientSideJs(studentIDs)
+{
+    console.log("loading /teacher/TeacherClientSide.js");
+    let srcCode = "const studentIDs = [" + studentIDs.join() + "];\n";
+    srcCode += "\n" + GenerateValidateInput();
+    srcCode += "\n\n" + GenerateFunctionGenerateTable();
+    return srcCode;
+}
+
+module.exports = { LoadTeacherHomePage, LoadTeacherClientSideJs, LoadTeacherLetterGrade };

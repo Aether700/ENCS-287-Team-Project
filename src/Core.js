@@ -194,6 +194,7 @@ function HandlePostRequest(request, response)
     request.on("end", function()
     {
         let form = querystring.parse(rawData);
+        console.log("post request received: " + form.formType);
 
         switch (form.formType)
         {
@@ -210,11 +211,15 @@ function HandlePostRequest(request, response)
                 response.setHeader('Content-Type', 'text/plain');
                 if (form.formType == undefined)
                 {
-                    response.end("No form type provided");
+                    let errorMessage = "No form type provided";
+                    console.log(errorMessage);
+                    response.end(errorMessage);
                 }
                 else
                 {
-                    response.end("Unknown form: " + form.formType);
+                    let errorMessage = "Unknown form: " + form.formType;
+                    console.log(errorMessage);
+                    response.end(errorMessage);
                 }
                 break;
         }
