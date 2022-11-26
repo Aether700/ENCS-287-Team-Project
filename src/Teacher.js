@@ -160,7 +160,7 @@ function GenerateTeacherBody(user)
         + user.GetID() + "';\" value='Assign letter grades' />";
 
     body += GenerateFooter();
-    body += "<script src=\"/teacher/TeacherClientSide.js\"></script>";
+    body += "<script src=\"/teacher/TeacherClientSide.js/" + user.GetID() + "\"></script>";
     body += "</body>";
     return body;
 }
@@ -225,7 +225,7 @@ function GenerateFunctionGenerateTable()
         +     "\ttableHtml += \"</table>\";\n"
         +     "\tlet tableDiv = document.getElementById(\"questionTable\");\n"
         +     "\ttableDiv.innerHTML = tableHtml;\n"
-        +     "\ttableDiv.innerHTML += \"<br/><button type = \\\"button\\\" onclick = \\\"document.write('Test');\\\" value = \\\"Save Assessment\\\">Save Assessment</button>\";\n" 
+        +     "\ttableDiv.innerHTML += \"<br/><button type = \\\"button\\\" onclick = \\\"SubmitCreateAssessmentForm();\\\" value = \\\"Save Assessment\\\">Save Assessment</button>\";\n" 
         +     "\treturn true;\n} ";
 }
 
@@ -260,12 +260,76 @@ function GenerateValidateInput()
     }`;
 }
 
-function LoadTeacherClientSideJs(studentIDs)
+function GenerateSubmitCreateAssessmentForm(user)
 {
-    console.log("loading /teacher/TeacherClientSide.js");
+    return `function SubmitCreateAssessmentForm()
+    {
+        let formData = 
+        {
+            name: document.getElementById("assessmentName").value,
+            weight: document.getElementById("weight").value,
+            numQuestions: document.getElementById("numQuestions").value,
+            formType: "assessmentCreation",
+            id: `+ user.GetID() +`,
+            gradesTable: "["
+        };
+
+        let table = document.getElementsByName("cells");
+        let grades = new Array();
+
+        table.forEach(function (item, key)
+        {
+            if (item.value == "" || item.value == undefined)
+            {
+                grades.push(0);
+            }
+            else
+            {
+                grades.push(item.value);
+            }
+        });
+
+        let maxGrade = new Array();
+        for (let i = 0; i < formData.numQuestions; i++)
+        {
+            maxGrade.push(grades.at(i));
+        }
+        formData.gradesTable += "{\\\"key\\\": \\\"maxGrade\\\", \\\"value\\\": [" + maxGrade.join() + "]},";
+
+        let index = 0;
+        while (index < studentIDs.length)
+        {
+            let studentGrades = new Array();
+            for (let i = 0; i < formData.numQuestions; i++)
+            {
+                studentGrades.push(grades.at(i + ((index + 1) * formData.numQuestions)));
+            }
+            formData.gradesTable += "{\\\"key\\\":" + studentIDs.at(index) 
+                + ", \\\"value\\\":[" + studentGrades.join() + "]}";
+            if (index != studentIDs.length - 1)
+            {
+                formData.gradesTable += ",";
+            }
+            index++;
+        }
+        formData.gradesTable += "]";
+
+        console.log("sending form");
+        SendFormPost(formData, function(event)
+        {
+            document.getElementById("questionTable").innerHtml = "<p>Assessment Created</p>";
+        });
+    }`;
+}
+
+function LoadTeacherClientSideJs(user, studentIDs, hostname, port)
+{
+    console.log("loading /teacher/TeacherClientSide.js/" + user.GetID());
     let srcCode = "const studentIDs = [" + studentIDs.join() + "];\n";
+    srcCode += "\n\n" + util.GenerateClientSideFunctionSendPostForm(hostname, port);
     srcCode += "\n" + GenerateValidateInput();
     srcCode += "\n\n" + GenerateFunctionGenerateTable();
+    srcCode += "\n\n" + GenerateSubmitCreateAssessmentForm(user);
     return srcCode;
 }
 

@@ -75,6 +75,12 @@ function GeneratePage(request, response, user, url)
                 response.end(teacher.LoadTeacherLetterGrade(user));
                 break;
 
+            case "TeacherClientSide.js":
+                response.statusCode = 200;
+                response.setHeader('Content-Type', 'text/javascript');
+                response.end(teacher.LoadTeacherClientSideJs(user, database.database.GetStudentIDs(), hostname, port));
+                break;
+
             default:
                 response.statusCode = 404;
                 response.setHeader('Content-Type', 'text/plain');
@@ -114,12 +120,6 @@ function HandleGetRequest(request, response)
                 response.statusCode = 200;
                 response.setHeader('Content-Type', 'text/js');
                 response.end(index.LoadIndexClientJs(hostname, port, database.database.GetUsernames()));
-                break;
-
-            case "/teacher/TeacherClientSide.js":
-                response.statusCode = 200;
-                response.setHeader('Content-Type', 'text/javascript');
-                response.end(teacher.LoadTeacherClientSideJs(database.database.GetStudentIDs()));
                 break;
 
             default:
@@ -194,7 +194,6 @@ function HandlePostRequest(request, response)
     request.on("end", function()
     {
         let form = querystring.parse(rawData);
-        console.log("post request received: " + form.formType);
 
         switch (form.formType)
         {
