@@ -278,7 +278,7 @@ function LoadTeacherClientSideJs(user, studentIDs, hostname, port)
             divStr += GenerateMaxGradeRow(numQuestions);
             divStr += GenerateStudentRows(numQuestions);
             divStr += "</table>";
-            divStr += "<br/><button type = \\"button\\" onclick = \\"SubmitCreateAssessmentForm(this);\\">` 
+            divStr += "<br/><button type = \\"button\\" onclick = \\"SubmitCreateAssessmentForm();\\">` 
                 + `Save Assessment</button>";
             tableDiv.innerHTML = divStr;
         }
