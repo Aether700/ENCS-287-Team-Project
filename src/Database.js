@@ -846,17 +846,23 @@ function OnLogin(form)
 function CreateAssessmentFromForm(form)
 {
    var gradeMap = JSON.parse(form.gradesTable);
-   var newAssessment = new Assessment(form.name, form.weight, form.numQuestions);
-    gradeMap.forEach(function(pair)
+   let maxGrades = [];
+    gradeMap[0].value.forEach(function(maxGrade){
+        maxGrades.push(new Question(maxGrade));
+    });
+
+   var newAssessment = new Assessment(form.name, form.weight, maxGrades);
+   for(let i = 0; i<students.length;i++)
     {
-     let newAssessmentResult =   new AssessmentResult(pair.value);
+     let newAssessmentResult =   new AssessmentResult(gradeMap[i+1].value);
      
-     newAssessment.SetGrades(pair.key, newAssessmentResult);
-     database.AddAssessment(newAssessment);
+     newAssessment.SetGrades(gradeMap[i+1].key, newAssessmentResult);
+    
      
-    })
+    }
+    database.AddAssessment(newAssessment);
     database.SaveToFile();
-    return;
+    
     
     
 }
