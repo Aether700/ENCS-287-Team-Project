@@ -848,5 +848,5 @@ function CreateAssessmentFromForm(form)
     
 }
 
-module.exports = { database, Database, Account, User, UserAssessment, AccountType, 
+module.exports = { database, noLetterGradeMessage, Database, Account, User, UserAssessment, AccountType, 
     InitializeDatabase, GenerateGUID, IsGUIDValid, SaveGUIDs, OnLogin, CreateAssessmentFromForm };

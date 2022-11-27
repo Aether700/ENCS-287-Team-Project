@@ -68,8 +68,9 @@ function AssessmentToHTMLStrTeacher(assessment)
     return htmlStr;
 }
 
-function LoadTeacherLetterGrade(user)
+function LoadTeacherLetterGrade(user, hostname, port)
 {
+    console.log("loading /teacher/letterGrade/" + user.GetID());
     const studentIds = database.database.GetStudentIDs()
     const numberOfStudents = studentIds.length
 
@@ -99,6 +100,66 @@ function LoadTeacherLetterGrade(user)
         var letter_grade = document.getElementById("letter_grade");
         var studentIds = [${studentIds}]
         const studentData = ${JSON.stringify(studentData)}
+
+        ` + util.GenerateClientSideFunctionSendPostForm(hostname, port) + `
+
+        function SendLetterGradeForm()
+        {
+            let formData = 
+            {
+                id: ` + user.GetID() + `,
+                formType: "changeLetterGrade",
+                letterGradeMapJson: "["
+            };
+
+            let table = document.getElementsByName("cells");
+            let grades = new Array();
+
+            table.forEach(function (item, key)
+            {
+                if (item.value == "" || item.value == undefined)
+                {
+                    grades.push(0);
+                }
+                else
+                {
+                    grades.push(item.value);
+                }
+            });
+
+            let gradeList = document.getElementsByName("letterGradeInput");
+            let gradeArr = new Array();
+
+            gradeList.forEach(function (item, key)
+            {
+                if (item.value == "" || item.value == undefined)
+                {
+                    grades.push("` + database.noLetterGradeMessage + `");
+                }
+                else
+                {
+                    grades.push(item.value);
+                }
+            });
+
+            for (let i = 0; i < ` + numberOfStudents + `; i++)
+            {
+                formData.letterGradeMapJson += "{\\"key\\":" +  studentData[i].id 
+                    + ", \\"value\\": \\"" + studentData[i].grade + "\\"}";
+                if (i != ` + numberOfStudents + ` - 1)
+                {
+                    formData.letterGradeMapJson += ",";
+                }
+            }
+
+            formData.letterGradeMapJson += "]";
+
+            SendFormPost(formData, function (event)
+            {
+                console.log("Finished loading letter grade");
+            });
+        }
+
         for (i=0;i<number;i++){
             const studentId = studentIds[i];
             letter_grade.appendChild(document.createTextNode(studentId));
@@ -108,15 +169,15 @@ function LoadTeacherLetterGrade(user)
             if (typeof studentData[i].grade !== "undefined" ){
                 input.value = studentData[i].grade
             }
-            input.name = studentId; 
+            input.name = "letterGradeInput"; 
             input.id = studentId;
             letter_grade.appendChild(input);
             letter_grade.appendChild(document.createElement("br"));
         }
-        <input type = hidden name = "formType" value = ""></input>
         var submit_button = document.createElement("input");
-        submit_button.type = "submit";
+        submit_button.type = "button";
         submit_button.value = "Submit";
+        submit_button.onclick = SendLetterGradeForm;
         letter_grade.appendChild(submit_button);
     </script>`;
 }

@@ -72,7 +72,7 @@ function GeneratePage(request, response, user, url)
             case "letterGrade":
                 response.statusCode = 200;
                 response.setHeader('Content-Type', 'text/html');
-                response.end(teacher.LoadTeacherLetterGrade(user));
+                response.end(teacher.LoadTeacherLetterGrade(user, hostname, port));
                 break;
 
             case "TeacherClientSide.js":
@@ -188,12 +188,21 @@ function HandleLetterGradeRequest(request, response, form)
 {
     console.log("\nAssigning letter grades")
 
-    //while form not empty
-        database.database
+    let gradeMap = JSON.parse(form.letterGradeMapJson);
+
+    database.database.SetLetterGrade(gradeMap[0].key, "K");
+
+    gradeMap.forEach(function(pair)
+    {
+        console.log(typeof pair.key);
+        console.log(pair.key + ": " + pair.value);
+    });
+
+    database.database.SaveToFile();
 
     response.statusCode = 200;
     response.setHeader('Content-Type', 'text/html');
-    response.end(teacher.LoadTeacherHomePage(new database(id)));
+    response.end(teacher.LoadTeacherLetterGrade(new database.User(parseInt(form.id)), hostname, port));
 }
 
 function HandlePostRequest(request, response)
@@ -221,7 +230,7 @@ function HandlePostRequest(request, response)
                 HandleCreateAccountForm(request, response, form);
                 break;
 
-            case "letterGrade":
+            case "changeLetterGrade":
                 HandleLetterGradeRequest(request, response, form);
                 break;
 
