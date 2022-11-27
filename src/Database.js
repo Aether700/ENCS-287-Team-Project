@@ -306,13 +306,14 @@ class Assessment
             let grade = mark.GetGrade();
             if (distribution.has(grade))
             {
-                distribution[grade] = distribution[grade] + 1;
+                distribution.set(grade, distribution.get(grade) + 1);
             }
             else
             {
                 distribution.set(grade, 1);
             }
         });
+
         return distribution;
     }
 
@@ -446,11 +447,6 @@ class Database
         let id = GenerateGUID();
         accounts.push(new Account(username, HashPassword(password), 
             userType, id));
-        
-        if (userType == AccountType.Student)
-        {
-            students.push(id);
-        }
 
         this.#assessments.forEach(function (assessment)
         {
@@ -847,5 +843,10 @@ function OnLogin(form)
     return new User(accountToLogin.GetID());
 }
 
+function CreateAssessmentFromForm(form)
+{
+    
+}
+
 module.exports = { database, Database, Account, User, UserAssessment, AccountType, 
-    InitializeDatabase, GenerateGUID, IsGUIDValid, SaveGUIDs, OnLogin };
+    InitializeDatabase, GenerateGUID, IsGUIDValid, SaveGUIDs, OnLogin, CreateAssessmentFromForm };
