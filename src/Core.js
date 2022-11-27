@@ -173,7 +173,7 @@ function HandleLoginRequest(request, response, form)
 
 function HandleCreateAccountForm(request, response, form)
 {
-    console.log("\ncreating new account");
+    console.log("\nCreating new account");
     let userType = form.userType == "Teacher" ? database.AccountType.Teacher : database.AccountType.Student;
     database.database.CreateAccount(form.username, form.password, userType);
     
@@ -182,6 +182,18 @@ function HandleCreateAccountForm(request, response, form)
     response.end(util.ReadFile("../../src/index.html"));
 
     console.log("created account with username: " + form.username);
+}
+
+function HandleLetterGradeRequest(request, response, form)
+{
+    console.log("\nAssigning letter grades")
+
+    //while form not empty
+        database.database
+
+    response.statusCode = 200;
+    response.setHeader('Content-Type', 'text/html');
+    response.end(teacher.LoadTeacherHomePage(new database(id)));
 }
 
 function HandlePostRequest(request, response)
@@ -203,6 +215,10 @@ function HandlePostRequest(request, response)
 
             case "createAccount":
                 HandleCreateAccountForm(request, response, form);
+                break;
+
+            case "letterGrade":
+                HandleLetterGradeRequest(request, response, form);
                 break;
 
             default:

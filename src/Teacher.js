@@ -128,6 +128,7 @@ function LoadTeacherLetterGrade(user)
             letter_grade.appendChild(input);
             letter_grade.appendChild(document.createElement("br"));
         }
+        <input type = hidden name = "formType" value = ""></input>
         var submit_button = document.createElement("input");
         submit_button.type = "submit";
         submit_button.value = "Submit";
