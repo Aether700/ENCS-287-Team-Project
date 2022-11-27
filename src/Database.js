@@ -845,6 +845,15 @@ function OnLogin(form)
 
 function CreateAssessmentFromForm(form)
 {
+    let gradeMap = JSON.parse(form.gradesTable);
+    gradeMap.forEach(function(pair)
+    {
+     let newAssessment =   new AssessmentResult(pair.value);
+     newAssessment.setGrades(pair.key, newAssessment);
+     database.AddAssessment(newAssessment);
+     
+    })
+    database.SaveToFile();
     
 }
 
