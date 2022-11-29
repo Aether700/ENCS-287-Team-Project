@@ -194,6 +194,7 @@ function HandleLetterGradeRequest(request, response, form)
 
     gradeMap.forEach(function(pair)
     {
+        database.database.SetLetterGrade(pair.key, pair.value);
         console.log(typeof pair.key);
         console.log(pair.key + ": " + pair.value);
     });
