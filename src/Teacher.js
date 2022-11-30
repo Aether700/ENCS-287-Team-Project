@@ -112,21 +112,6 @@ function LoadTeacherLetterGrade(user, hostname, port)
                 letterGradeMapJson: "["
             };
 
-            let table = document.getElementsByName("cells");
-            let grades = new Array();
-
-            table.forEach(function (item, key)
-            {
-                if (item.value == "" || item.value == undefined)
-                {
-                    grades.push(0);
-                }
-                else
-                {
-                    grades.push(item.value);
-                }
-            });
-
             let gradeList = document.getElementsByName("letterGradeInput");
             let gradeArr = new Array();
 
@@ -134,18 +119,18 @@ function LoadTeacherLetterGrade(user, hostname, port)
             {
                 if (item.value == "" || item.value == undefined)
                 {
-                    grades.push("` + database.noLetterGradeMessage + `");
+                    gradeArr.push("` + database.noLetterGradeMessage + `");
                 }
                 else
                 {
-                    grades.push(item.value);
+                    gradeArr.push(item.value);
                 }
             });
 
             for (let i = 0; i < ` + numberOfStudents + `; i++)
             {
                 formData.letterGradeMapJson += "{\\"key\\":" +  studentData[i].id 
-                    + ", \\"value\\": \\"" + studentData[i].grade + "\\"}";
+                    + ", \\"value\\": \\"" + gradeArr[i] + "\\"}";
                 if (i != ` + numberOfStudents + ` - 1)
                 {
                     formData.letterGradeMapJson += ",";
@@ -153,6 +138,8 @@ function LoadTeacherLetterGrade(user, hostname, port)
             }
 
             formData.letterGradeMapJson += "]";
+
+            console.log(formData.letterGradeMapJson);
 
             SendFormPost(formData, function (event)
             {
