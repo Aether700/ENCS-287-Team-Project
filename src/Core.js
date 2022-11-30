@@ -72,7 +72,7 @@ function GeneratePage(request, response, user, url)
             case "letterGrade":
                 response.statusCode = 200;
                 response.setHeader('Content-Type', 'text/html');
-                response.end(teacher.LoadTeacherLetterGrade(user));
+                response.end(teacher.LoadTeacherLetterGrade(user, hostname, port));
                 break;
 
             case "TeacherClientSide.js":
@@ -173,7 +173,7 @@ function HandleLoginRequest(request, response, form)
 
 function HandleCreateAccountForm(request, response, form)
 {
-    console.log("\ncreating new account");
+    console.log("\nCreating new account");
     let userType = form.userType == "Teacher" ? database.AccountType.Teacher : database.AccountType.Student;
     database.database.CreateAccount(form.username, form.password, userType);
     
@@ -184,15 +184,26 @@ function HandleCreateAccountForm(request, response, form)
     console.log("created account with username: " + form.username);
 }
 
-function HandleAssessmentCreation(request, response, form)
+function HandleLetterGradeRequest(request, response, form)
 {
-    // receive and save assessment data
-    console.log("\nCreating assessment \"" + form.name + "\"");
-    database.CreateAssessmentFromForm(form);
+    console.log("\nAssigning letter grades")
+
+    let gradeMap = JSON.parse(form.letterGradeMapJson);
+
+    database.database.SetLetterGrade(gradeMap[0].key, "K");
+
+    gradeMap.forEach(function(pair)
+    {
+        database.database.SetLetterGrade(pair.key, pair.value);
+        console.log(typeof pair.key);
+        console.log(pair.key + ": " + pair.value);
+    });
+
+    database.database.SaveToFile();
 
     response.statusCode = 200;
     response.setHeader('Content-Type', 'text/html');
-    response.end(teacher.LoadTeacherHomePage(new database.User(parseInt(form.id))));
+    response.end(teacher.LoadTeacherLetterGrade(new database.User(parseInt(form.id)), hostname, port));
 }
 
 function HandlePostRequest(request, response)
@@ -218,6 +229,10 @@ function HandlePostRequest(request, response)
 
             case "createAccount":
                 HandleCreateAccountForm(request, response, form);
+                break;
+
+            case "changeLetterGrade":
+                HandleLetterGradeRequest(request, response, form);
                 break;
 
             default:
