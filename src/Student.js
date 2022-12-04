@@ -9,14 +9,14 @@ function QuestionToHTMLStrStudent(assessment, index)
 
 function GenerateHeader()
 {
-    return "<h1 style=\"position: relative; width:100% ; padding: 0.32%; bottom: 85%; top: -30px; left: -8px; right: 0; " +
+    return "<h1 style=\"position: relative;padding:0;margin:0; width:100% ; height:5.5%; top: -10px; left: -5px; right: 0; " +
         "text-align: center;font-size:40px; background: #912338; color: white;\">Concordia University</h1>";
         
 }
 function GenerateFooter()
 {
-    return "<h5 style=\"position: fixed; padding: 1%; bottom: -22px; top: 95%; left: 0%; " + 
-        "right: 0%; text-align: center; background: #912338; color: white;\"> " + 
+    return "<h5 style=\"position: absolute; width:100%;height:5%; left: -5px; " + 
+        "text-align: center; background: #912338; color: white;\"> " + 
         "Website made by Hao Mei, Jamil Hanachian, James Teasdale, Alex Ye, Catherine Pham " + 
         "& Nikita Ciobanu</h6>";
 }
@@ -53,19 +53,21 @@ function GenerateStyle()
 }
 function GenerateStudentBody(user)
 {
-    let body = "<body>";
+    let body = "<body style='position:absolute;width:100%;overflow-x: hidden;height:100%;top:0;left:0;'>";
     body += GenerateHeader();
     let assessments = user.GetAssessmentsStudent();
     assessments.forEach(function (assessment)
     {
         body += AssessmentToHTMLStrStudent(assessment);
     });
-    body += GenerateFooter();
-    body += "<p>Total: &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;" + user.GetFinalGrade().toFixed(2) + "/100</p>";
+
     body +=  "<table><tr><td> Student ID: &emsp;" +user.GetID();
     body += "<table><tr><td> Letter Grade: " + user.GetLetterGrade() ; 
     body += "</table>";
+    body += "<p style=';background-color:#912338; width: 250px; padding:3px; margin:2px;top:-30px; border-radius:10px;border:2px solid black;'>Total: &emsp;&emsp;&emsp;&emsp;" + user.GetFinalGrade().toFixed(2) + "/100</p>";
+    body += GenerateFooter();
     body += "</body>";
+    
 
     return body;
 }

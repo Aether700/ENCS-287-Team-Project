@@ -203,7 +203,7 @@ function GenerateOverview(assessments)
 
 function GenerateTeacherBody(user)
 {
-    let body = "<body>";
+    let body = "<body style='position:absolute;width:100%;overflow-x: hidden;height:100%;top:0;left:0;'>";
     body += GenerateHeader();
     body += AssessmentToHTMLStrTeacherGrade() + "<br/><br/>";
     let assessments = user.GetAssessmentsTeacher();
@@ -233,14 +233,14 @@ function GenerateStyle()
 
 function GenerateHeader()
 {
-    return "<h1 style=\"position: relative; width:100%; padding: 0.8%;  top: -30px; left: -14.5px; right: 0%; " +
+    return "<h1 style=\"position: relative;padding:0;margin:0; width:100% ; height:5.5%; top: -10px; left: -5px; right: 0; " +
         "text-align: center;font-size:40px; background: #912338; color: white;\">Concordia University</h1>";
         
 }
 
 function GenerateFooter()
 {
-    return "<h5 style=\"position: relative; width:100%; padding: 0.5%; bottom: -22px; top: 95%; left: -6px; " + 
+    return "<h5 style=\"position: absolute; width:100%;height:5%; left: -5px;" + 
         "right: 0%; text-align: center; background: #912338; color: white;\"> " + 
         "Website made by Hao Mei, Jamil Hanachian, James Teasdale, Alex Ye, Catherine Pham " + 
         "& Nikita Ciobanu</h6>";
