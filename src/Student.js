@@ -9,7 +9,7 @@ function QuestionToHTMLStrStudent(assessment, index)
 
 function GenerateHeader()
 {
-    return "<h1 style=\"position: relative; width:100% ; padding: 0.2%; bottom: 85%; top: -30px; left: -10px; right: 0; " +
+    return "<h1 style=\"position: relative; width:100% ; padding: 0.32%; bottom: 85%; top: -30px; left: -8px; right: 0; " +
         "text-align: center;font-size:40px; background: #912338; color: white;\">Concordia University</h1>";
         
 }
@@ -65,7 +65,6 @@ function GenerateStudentBody(user)
     body +=  "<table><tr><td> Student ID: &emsp;" +user.GetID();
     body += "<table><tr><td> Letter Grade: " + user.GetLetterGrade() ; 
     body += "</table>";
-    body += GenerateGradeSystem();
     body += "</body>";
 
     return body;
