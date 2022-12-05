@@ -227,7 +227,7 @@ function GenerateTeacherBody(user)
 
 function GenerateStyle()
 {
-    return "<style> table, th, td {border:1px solid black;}  u{color: #912338} p{font-weight: bold;} button{background-color:#0a0a23;color: #fff; border:5px double #cccccc;border-radius:15px;} button:hover{  background-color:#0a0a23;color: #Ff0000; border:5px double #cccccc;border-radius:15px; }button:active{transform: scale(0.90);}"+
+    return "<style> table, th, td {border:1px solid black;border-radius: 10px;}  u{color: #912338} p{font-weight: bold;} button{background-color:#0a0a23;color: #fff; border:5px double #cccccc;border-radius:15px;} button:hover{  background-color:#0a0a23;color: #Ff0000; border:5px double #cccccc;border-radius:15px; }button:active{transform: scale(0.90);}"+
     " input[type=button]:active{ transform: scale(0.90);} input[type=button]{background-color:#0a0a23;color: #fff; border:5px double #cccccc;border-radius:15px;} input[type=button]:hover{  background-color:#0a0a23;color: #Ff0000; border:5px double #cccccc;border-radius:15px; } </style>"
 }
 
