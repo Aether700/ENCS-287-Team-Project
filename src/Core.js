@@ -113,7 +113,7 @@ function HandleGetRequest(request, response)
             case "/index.css":
                 response.statusCode = 200;
                 response.setHeader('Content-Type', 'text/css');
-                response.end(util.ReadFile("../../src/index.css"));
+                response.end(util.ReadFile("../../src/css/index.css"));
                 break;
 
             case "/indexClient.js":
