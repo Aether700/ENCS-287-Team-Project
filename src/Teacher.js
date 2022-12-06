@@ -3,14 +3,15 @@ const database = require("../src/Database.js");
 
 function QuestionToHTMLStrTeacher(assessment, question, index)
 {
-    return "Max grade for the question: " + question.GetMaxGrade() + "\t | Average: " + assessment.GetQuestionAverage(index);
+    return "<tr><th>" + question.GetMaxGrade() 
+        + "</th><td>" + assessment.GetQuestionAverage(index) + "</td></tr>";
 }
 
 function AssessmentToHTMLStrTeacherGrade()
 {
     return `
-    <div ><h1>SOEN 287 Section Q</h1> </div>
-    <div><h3>Add assessment for a student:</h3></div>
+    <div ><h2>SOEN 287 Section Q</h2> </div>
+    <div><h3>Add assessment for a student</h3></div>
     <div class="mainBox">
         <div class="text02Box"> 
             <input type =  "hidden" name = "formType" value = "createAssessment"/>
@@ -28,42 +29,49 @@ function AssessmentToHTMLStrTeacherGrade()
             <button type = "button" class="dropbtn" onclick = "GenerateAssessmentGradeTable();">Create Assessment</button>
             <br>
             <br>
+            
             <div id = "questionTable">
             </div>
-           
+            
         </div>
     </div> `;
 }
-
+        
 function AssessmentToHTMLStrTeacher(assessment)
 {
     let htmlStr = "<h2><b><u>" + assessment.GetName() + "</u></h2>";
-    
-    /*
-    htmlStr += "<table><tr><th>Weight</th><th>Class Average</th></tr>" + "<tr><td>" + assessment.GetWeight() + "</td>" 
-        + "<td>" + assessment.GetAverage() + "</td></tr>";
-    */
-
+            
     htmlStr += "<h3><b>Distribution</h3>";
     let distribution = assessment.GetDistribution();
+    htmlStr += "<table>";
     distribution.forEach(function(numStudents, grade)
     {
-        htmlStr += "<table><tr><td><b>Grade: </b>" + grade + "</td>" + "<tr><td><b>Number of Students: " + numStudents + "</td></tr></table>";
+        htmlStr += "<tr><td><b>Grade: </b>" + grade + "</td>" + "<tr><td>Number of Students: " + numStudents + "</td></tr>";
     });
-
+            
+    htmlStr += "</table>";
+            
     htmlStr += "<h3><b>Marks of each student (ID)</h3>";
     let totals = assessment.GetTotals();
+
+    htmlStr += "<table>";
+    htmlStr += "<tr><th>Student ID</th><th>Total</th></tr>";
     totals.forEach(function (total, id)
     {
-        htmlStr += "<table><tr><th>ID: " + id + "</th>" + "<tr><th> Total: " + total + "</th></tr></table>";
+        htmlStr += "<tr><th>" + id + "</th><th>" + total + "</th></tr>";
     });
+    htmlStr += "</table>";
+    
     htmlStr += "<h3><b>Questions</h3>";
 
+    htmlStr += "<table>";
+    htmlStr += "<tr><th>Max Grade For The Question</th><th>Average</th></tr>";
     let questions = assessment.GetQuestions();
     for (let i = 0; i < questions.length; i++)
     {
-        htmlStr += "<table><tr><td style='width:325px;'><b>" + QuestionToHTMLStrTeacher(assessment, questions[i], i) + "</td></tr></table>";
+        htmlStr += QuestionToHTMLStrTeacher(assessment, questions[i], i);
     }
+    htmlStr += "</table>";
     return htmlStr;
 }
 
