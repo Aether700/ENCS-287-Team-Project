@@ -204,7 +204,7 @@ function GenerateOverview(assessments)
 function GenerateTeacherBody(user)
 {
     let body = "<body style='position:absolute;width:100%;overflow-x: hidden;height:100%;top:0;left:0;'>";
-    body += GenerateHeader();
+    body += util.GeneratePageHeader();
     body += AssessmentToHTMLStrTeacherGrade() + "<br/><br/>";
     let assessments = user.GetAssessmentsTeacher();
     body += GenerateOverview(assessments);
@@ -219,7 +219,7 @@ function GenerateTeacherBody(user)
         + user.GetID() + "';\" value='Assign letter grades' /> "
    
 
-    body += GenerateFooter();
+    body += util.GeneratePageFooter();
     body += "<script src=\"/teacher/TeacherClientSide.js/" + user.GetID() + "\"></script>";
     body += "</body>";
     return body;
@@ -229,21 +229,6 @@ function GenerateStyle()
 {
     return "<style> table, th, td {border:1px solid black;border-radius: 10px;}  u{color: #912338} p{font-weight: bold;} button{background-color:#0a0a23;color: #fff; border:5px double #cccccc;border-radius:15px;} button:hover{  background-color:#0a0a23;color: #Ff0000; border:5px double #cccccc;border-radius:15px; }button:active{transform: scale(0.90);}"+
     " input[type=button]:active{ transform: scale(0.90);} input[type=button]{background-color:#0a0a23;color: #fff; border:5px double #cccccc;border-radius:15px;} input[type=button]:hover{  background-color:#0a0a23;color: #Ff0000; border:5px double #cccccc;border-radius:15px; } </style>"
-}
-
-function GenerateHeader()
-{
-    return "<h1 style=\"position: relative;padding:0.6%;margin:0; width:102% ; height:5.5%; top: -8px; left: -15px; right: 0; " +
-        "text-align: center;font-size:40px; background: #912338; color: white;\">Concordia University</h1>";
-        
-}
-
-function GenerateFooter()
-{
-    return "<h5 style=\"position: absolute; width:102%;height:5%; left: -15px;" + 
-        "right: 0%; text-align: center; background: #912338; color: white;\"> " + 
-        "Website made by Hao Mei, Jamil Hanachian, James Teasdale, Alex Ye, Catherine Pham " + 
-        "& Nikita Ciobanu</h6>";
 }
 
 function LoadTeacherHomePage(user)

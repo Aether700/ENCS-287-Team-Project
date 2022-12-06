@@ -7,20 +7,6 @@ function QuestionToHTMLStrStudent(assessment, index)
     return assessment.GetQuestionGrade(index) + "/" + assessment.GetQuestionMaxGrade(index);
 }
 
-function GenerateHeader()
-{
-    return "<h1 style=\"position: relative;padding:0.6%;margin:0; width:102% ; height:5.5%; top: -8px; left: -15px; right: 0; " +
-        "text-align: center;font-size:40px; background: #912338; color: white;\">Concordia University</h1>";
-        
-}
-function GenerateFooter()
-{
-    return "<h5 style=\"position: absolute; width:102%;height:5%; left: -15px; " + 
-        "text-align: center; background: #912338; color: white;\"> " + 
-        "Website made by Hao Mei, Jamil Hanachian, James Teasdale, Alex Ye, Catherine Pham " + 
-        "& Nikita Ciobanu</h6>";
-}
-
 function AssessmentToHTMLStrStudent(assessment)
 {
     var htmlStr = "<h2><b><u>"  + assessment.GetName() +  "</u></h2>"; 
@@ -39,10 +25,7 @@ function AssessmentToHTMLStrStudent(assessment)
 
     return htmlStr;
 }
-function GenerateGradeSystem(){
-    var GPA ="<table><caption><h3 style='color: #912338'>Grade System</h3></caption><tr><th>Letter Grade</th><th>GPA </th></tr><tr><td>A+</td><td>4.3</td></tr><tr><td>A</td><td>4.0</td> </tr><tr><td>A-</td><td>3.7</td> </tr><tr><td>B+</td><td>3.3</td> </tr><tr><td>B</td><td>3.0</td> </tr><tr><td>B-</td><td>2.7</td> </tr><tr><td>C+</td><td>2.3</td> </tr><tr><td>C</td><td>2.0</td> </tr><tr><td>C-</td><td>1.7</td> </tr><tr><td>D+</td><td>1.3</td> </tr> <tr><td>D</td><td>1.0</td> </tr><tr><td>D-</td><td>0.7</td> </tr><tr><td>F</td><td>0</td> </tr></table>"
-    return GPA
-}
+
 function GenerateStudentPageHead()
 {
     return "<head>"+ GenerateStyle()+"</head>";
@@ -54,7 +37,7 @@ function GenerateStyle()
 function GenerateStudentBody(user)
 {
     let body = "<body style='position:absolute;width:100%;overflow-x: hidden;height:100%;top:0;left:0;'>";
-    body += GenerateHeader();
+    body += util.GeneratePageHeader();
     let assessments = user.GetAssessmentsStudent();
     assessments.forEach(function (assessment)
     {
@@ -65,7 +48,7 @@ function GenerateStudentBody(user)
     body += "<table><tr><td> Letter Grade: " + user.GetLetterGrade() ; 
     body += "</table>";
     body += "<p style=';background-color:#912338; width: 250px; padding:3px; margin:2px;top:-30px; border-radius:10px;border:2px solid black;'>Total: &emsp;&emsp;&emsp;&emsp;" + user.GetFinalGrade().toFixed(2) + "/100</p>";
-    body += GenerateFooter();
+    body += util.GeneratePageFooter();
     body += "</body>";
     
 
