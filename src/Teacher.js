@@ -3,7 +3,8 @@ const database = require("../src/Database.js");
 
 function QuestionToHTMLStrTeacher(assessment, question, index)
 {
-    return "Max grade for the question: " + question.GetMaxGrade() + "\t | Average: " + assessment.GetQuestionAverage(index);
+    return "<tr><th>" + question.GetMaxGrade() 
+        + "</th><td>" + assessment.GetQuestionAverage(index) + "</td></tr>";
 }
 
 function AssessmentToHTMLStrTeacherGrade()
@@ -28,43 +29,49 @@ function AssessmentToHTMLStrTeacherGrade()
             <button type = "button" class="dropbtn" onclick = "GenerateAssessmentGradeTable();">Create Assessment</button>
             <br>
             <br>
-
+            
             <div id = "questionTable">
             </div>
-    
+            
         </div>
     </div> `;
 }
-
+        
 function AssessmentToHTMLStrTeacher(assessment)
 {
-    let htmlStr = "<p><b><u>" + assessment.GetName() + "</u></p>";
-    
-    /*
-    htmlStr += "<table><tr><th>Weight</th><th>Class Average</th></tr>" + "<tr><td>" + assessment.GetWeight() + "</td>" 
-        + "<td>" + assessment.GetAverage() + "</td></tr>";
-    */
-
-    htmlStr += "<p><b>Distribution</p>";
+    let htmlStr = "<h2><b><u>" + assessment.GetName() + "</u></h2>";
+            
+    htmlStr += "<h3><b>Distribution</h3>";
     let distribution = assessment.GetDistribution();
+    htmlStr += "<table>";
     distribution.forEach(function(numStudents, grade)
     {
-        htmlStr += "<table><tr><td><b>Grade: </b>" + grade + "</td>" + "<tr><td>Number of Students: " + numStudents + "</td></tr></table>";
+        htmlStr += "<tr><td><b>Grade: </b>" + grade + "</td>" + "<tr><td>Number of Students: " + numStudents + "</td></tr>";
     });
-
-    htmlStr += "<p><b>Marks of each student (ID)</p>";
+            
+    htmlStr += "</table>";
+            
+    htmlStr += "<h3><b>Marks of each student (ID)</h3>";
     let totals = assessment.GetTotals();
+
+    htmlStr += "<table>";
+    htmlStr += "<tr><th>Student ID</th><th>Total</th></tr>";
     totals.forEach(function (total, id)
     {
-        htmlStr += "<table><tr><th>ID: " + id + "</th>" + "<tr><th> Total: " + total + "</th></tr></table>";
+        htmlStr += "<tr><th>" + id + "</th><th>" + total + "</th></tr>";
     });
-    htmlStr += "<p><b>Questions</p>";
+    htmlStr += "</table>";
+    
+    htmlStr += "<h3><b>Questions</h3>";
 
+    htmlStr += "<table>";
+    htmlStr += "<tr><th>Max Grade For The Question</th><th>Average</th></tr>";
     let questions = assessment.GetQuestions();
     for (let i = 0; i < questions.length; i++)
     {
-        htmlStr += "<table><tr><td>" + QuestionToHTMLStrTeacher(assessment, questions[i], i) + "</td></tr></table>";
+        htmlStr += QuestionToHTMLStrTeacher(assessment, questions[i], i);
     }
+    htmlStr += "</table>";
     return htmlStr;
 }
 
@@ -83,14 +90,25 @@ function LoadTeacherLetterGrade(user, hostname, port)
     
     return `
     <input type="button" onclick = "document.location.href = '/teacher/home/` + user.GetID() 
-        + `'" value="Go back to assessment page">
+        + `'" value="Go back to assessment page"> <style> input[type=button]{background-color:#0a0a23;color: #fff; border:5px double #cccccc;border-radius:15px;} input[type=button]:hover{  background-color:#0a0a23;color: #Ff0000; border:5px double #cccccc;border-radius:15px; }  input[type=button]:active{ transform: scale(0.90);} </style>
     <div ><h2>SOEN 287 Section Q </h2> </div>
-    <div><h3>Assign letter grade for the students</h3></div>
-    <div><h4>ID &emsp;&emsp;&emsp;&emsp; Letter Grade</h4></div>
+    <div><h3><u style='color:#912338;'>Assign letter grade for the students</u></h3></div>
+    <div><h4>&emsp;ID &emsp;&emsp;&emsp;&emsp; Letter Grade</h4></div>
 
     <div class="mainBox">
         <form id = "letter_grade">
         </form>
+        <style> form {
+            background-color:#912338;
+            width: 300px;
+            padding:10px;
+            font-weight:bold;
+            margin:-7px;
+            border-radius:15px;
+            border:2px solid black;
+            line-height: 30px;
+           }
+           </style>
     </div>
    
     <script>
@@ -193,8 +211,8 @@ function GenerateOverview(assessments)
 
 function GenerateTeacherBody(user)
 {
-    let body = "<body>";
-    body += GenerateHeader();
+    let body = "<body style='position:absolute;width:100%;overflow-x: hidden;height:100%;top:0;left:0;'>";
+    body += util.GeneratePageHeader();
     body += AssessmentToHTMLStrTeacherGrade() + "<br/><br/>";
     let assessments = user.GetAssessmentsTeacher();
     body += GenerateOverview(assessments);
@@ -206,9 +224,10 @@ function GenerateTeacherBody(user)
     });
 
     body += "<br><br><input type='button' onclick = \"document.location.href = '/teacher/letterGrade/" 
-        + user.GetID() + "';\" value='Assign letter grades' />";
+        + user.GetID() + "';\" value='Assign letter grades' /> "
+   
 
-    body += GenerateFooter();
+    body += util.GeneratePageFooter();
     body += "<script src=\"/teacher/TeacherClientSide.js/" + user.GetID() + "\"></script>";
     body += "</body>";
     return body;
@@ -216,24 +235,8 @@ function GenerateTeacherBody(user)
 
 function GenerateStyle()
 {
-    return "<style> table, th, td {border:1px solid black;} </style>"
-}
-
-function GenerateHeader()
-{
-    return "<h1 style=\"position: relative; " +
-        "padding: 0.1%; bottom: 82%; top: 0%; left: 0%; right: 0%; " +
-        "text-align: center; background: #912338; color: white;\">Concordia University</h1>";
-        //<p style = \"position: fixed; padding: 0.1%; bottom: 82%; top: 0%; left: 0%; right: 0%; 
-        //text-align: center; background: #912338; color: white;\">Marks and Grades assessment for 
-        //SOEN 287 for Fall 2022</p>"
-}
-function GenerateFooter()
-{
-    return "<h6 style=\"position: relative; padding: 1%; bottom: 0%; top: 92%; left: 0%; " + 
-        "right: 0%; text-align: center; background: #912338; color: white;\"> " + 
-        "Website made by Hao Mei, Jamil Hanachian, James Teasdale, Alex Ye, Catherine Pham " + 
-        "& Nikita Ciobanu</h6>";
+    return "<style> table, th, td {border:1px solid black;border-radius: 10px;}  u{color: #912338} p{font-weight: bold;} button{background-color:#0a0a23;color: #fff; border:5px double #cccccc;border-radius:15px;} button:hover{  background-color:#0a0a23;color: #Ff0000; border:5px double #cccccc;border-radius:15px; }button:active{transform: scale(0.90);}"+
+    " input[type=button]:active{ transform: scale(0.90);} input[type=button]{background-color:#0a0a23;color: #fff; border:5px double #cccccc;border-radius:15px;} input[type=button]:hover{  background-color:#0a0a23;color: #Ff0000; border:5px double #cccccc;border-radius:15px; } </style>"
 }
 
 function LoadTeacherHomePage(user)

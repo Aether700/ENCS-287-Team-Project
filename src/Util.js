@@ -28,6 +28,21 @@ function GenerateHTMLFooter()
     return "</html>";
 }
 
+function GeneratePageHeader()
+{
+    return "<h1 style=\"position: relative;padding:0.6%;margin:0; width:102% ; height:6.5%; top: -8px; left: -15px; right: 0; " +
+        "text-align: center;font-size:40px; background: #912338; color: white;\">Concordia University</h1>";
+        
+}
+
+function GeneratePageFooter()
+{
+    return "<h5 style=\"position: absolute; padding:0.6%; width:102%;height:6%; left: -15px;" + 
+        "right: 0%; text-align: center; background: #912338; color: white;\"> " + 
+        "Website made by Hao Mei, Jamil Hanachian, James Teasdale, Alex Ye, Catherine Pham " + 
+        "& Nikita Ciobanu</h6>";
+}
+
 function GenerateClientSideFunctionSendPostForm(hostname, port)
 {
     return ""
@@ -76,4 +91,5 @@ module.exports = {
     ReadFile, WriteToFile, GenerateHTMLHeader, 
     GenerateHTMLFooter, GenerateClientSideFunctionSendPostForm, 
     GenerateClientSideFunctionSendGetRequest,
+    GeneratePageFooter, GeneratePageHeader,
     dataDirectory };
